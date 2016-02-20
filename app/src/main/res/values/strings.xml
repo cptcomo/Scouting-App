@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TestApplication</string>
+    <string name="action_settings">Settings</string>
+    <string name="teamNumber">Team Number</string>
+    <string name="Send">send</string>
+    <string name="HowManyText">How many?</string>
+</resources>

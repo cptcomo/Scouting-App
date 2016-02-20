@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.drago.testapplication.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:ems="10"
+        android:id="@+id/teamNumber"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:hint="Team Number" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Autonomous"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:id="@+id/autonomousText"
+        android:layout_below="@id/teamNumber"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robot breaches the defenses"
+        android:id="@+id/breachInAutonomousText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false"
+        android:layout_below="@+id/autonomousText" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robot scores in autonomous"
+        android:id="@+id/scoresInAutonomousText"
+        android:layout_below="@+id/breachInAutonomousText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scoreInAutonomusSpinner"
+        android:layout_below="@+id/scoresInAutonomousText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TeleOp"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:id="@+id/teleOpText"
+        android:layout_below="@+id/scoreInAutonomusSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robot scores in high goal"
+        android:id="@+id/scoreInHighGoalBox"
+        android:layout_below="@+id/teleOpText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:ems="10"
+        android:id="@+id/numberScoredInHighGoal"
+        android:hint="@string/HowManyText"
+        android:layout_below="@+id/scoreInHighGoalBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:visibility="gone"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robot scores in low goal"
+        android:id="@+id/scoreInLowGoalBox"
+        android:layout_below="@+id/scoreInHighGoalBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:ems="10"
+        android:id="@+id/numberScoredInLowGoal"
+        android:layout_below="@+id/scoreInLowGoalBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:hint="@string/HowManyText"
+        android:visibility="gone"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robot can hang"
+        android:id="@+id/canHangBox"
+        android:layout_below="@+id/scoreInLowGoalBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robot defends"
+        android:id="@+id/defendsBox"
+        android:layout_below="@+id/canHangBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Defenses"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:id="@+id/defensesText"
+        android:layout_below="@+id/defendsBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Portcullis(Lifted gate):"
+        android:layout_marginTop="2dp"
+        android:id="@+id/portcullisText"
+        android:layout_below="@+id/defensesText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/portcullisSpinner"
+        android:layout_below="@+id/defensesText"
+        android:layout_toRightOf="@+id/portcullisText"
+        android:layout_toEndOf="@+id/portcullisText"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chevel De Frise(See-saw):"
+        android:layout_marginTop="2dp"
+        android:id="@+id/chevelDeFriseText"
+        android:layout_below="@+id/portcullisSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chevelDeFriseSpinner"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/portcullisSpinner"
+        android:layout_toRightOf="@+id/chevelDeFriseText"
+        android:layout_toEndOf="@+id/chevelDeFriseText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Moat:"
+        android:layout_marginTop="2dp"
+        android:id="@+id/moatText"
+        android:layout_below="@+id/chevelDeFriseSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/moatSpinner"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/chevelDeFriseSpinner"
+        android:layout_toRightOf="@+id/moatText"
+        android:layout_toEndOf="@+id/moatText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ramparts(Metal ramps):"
+        android:layout_marginTop="2dp"
+        android:id="@+id/rampartsText"
+        android:layout_below="@+id/moatSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rampartsSpinner"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/moatSpinner"
+        android:layout_toRightOf="@+id/rampartsText"
+        android:layout_toEndOf="@+id/rampartsText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Drawbridge:"
+        android:layout_marginTop="2dp"
+        android:id="@+id/drawbridgeText"
+        android:layout_below="@+id/rampartsSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/drawbridgeSpinner"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/rampartsSpinner"
+        android:layout_toRightOf="@+id/drawbridgeText"
+        android:layout_toEndOf="@+id/drawbridgeText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sally Port:"
+        android:layout_marginTop="2dp"
+        android:id="@+id/sallyPortText"
+        android:layout_below="@+id/drawbridgeSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sallyPortSpinner"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/drawbridgeSpinner"
+        android:layout_toRightOf="@+id/sallyPortText"
+        android:layout_toEndOf="@+id/sallyPortText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rock Wall:"
+        android:layout_marginTop="2dp"
+        android:id="@+id/rockWallText"
+        android:layout_below="@+id/sallyPortSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rockWallSpinner"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/sallyPortSpinner"
+        android:layout_toRightOf="@+id/rockWallText"
+        android:layout_toEndOf="@+id/rockWallText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rough terrain:"
+        android:layout_marginTop="2dp"
+        android:id="@+id/roughTerrainText"
+        android:layout_below="@+id/rockWallSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/roughTerrainSpinner"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/rockWallSpinner"
+        android:layout_toRightOf="@+id/roughTerrainText"
+        android:layout_toEndOf="@+id/roughTerrainText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Low bar:"
+        android:layout_marginTop="2dp"
+        android:id="@+id/lowBarText"
+        android:layout_below="@+id/roughTerrainSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lowBarSpinner"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/roughTerrainSpinner"
+        android:layout_toRightOf="@+id/lowBarText"
+        android:layout_toEndOf="@+id/lowBarText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND"
+        android:id="@+id/sendButton"
+        android:layout_below="@+id/lowBarSpinner"
+        android:layout_toRightOf="@+id/teamNumber"
+        android:layout_toEndOf="@+id/teamNumber" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Version: "
+        android:id="@+id/versionText"
+        android:layout_below="@+id/sendButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
+</ScrollView>
