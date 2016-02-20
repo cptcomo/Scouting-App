@@ -217,9 +217,9 @@ public class MainActivity extends AppCompatActivity {
                 outputs[13] = defensesValue.get(rockWallSpinner.getSelectedItem().toString());
                 outputs[14] = defensesValue.get(roughTerrainSpinner.getSelectedItem().toString());
                 outputs[15] = lowBarSpinner.getSelectedItem().toString() == "Breached" ? "1" : "-1";
-                //execute asynctask
 
                 if(isInternetConnected(context)) {
+                    //execute asynctask
                     postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
                             outputs[0],outputs[1],outputs[2],outputs[3],outputs[4],outputs[5],outputs[6],outputs[7],outputs[8],
                             outputs[9],outputs[10],outputs[11],outputs[12],outputs[13],outputs[14],outputs[15]
@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
                 for (Spinner defense : defenses) {
                     defense.setSelection(0);
                 }
+                lowBarSpinner.setSelection(0);
             }
         });
 
