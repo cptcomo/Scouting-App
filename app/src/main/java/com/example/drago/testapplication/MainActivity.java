@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity {
-    //Hello
     public static final MediaType FORM_DATA_TYPE
             = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
 
@@ -230,57 +229,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            private boolean writeToFile() {
-                if(isExternalStorageWritable()) {
-                    File fileDirectory = new File(Environment.getExternalStorageDirectory() + "/Documents");
-                    boolean isPresent = true;
-                    if(!fileDirectory.exists()) {
-                        isPresent = fileDirectory.mkdir();
-                    }
-                    File file;
-                    if(isPresent) {
-                        file = new File(fileDirectory.getAbsolutePath(), "Stronghold Scouting App Data.txt");
-                    } else {
-                        Toast.makeText(context, "Unable to create file", Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                    FileOutputStream out;
-                    String output = "";
-                    output += outputs[0] + " " + outputs[1] + " " + outputs[2] + " " +
-                            outputs[3] + " " + outputs[4] + " " + outputs[5] + " " +
-                            outputs[6] + " " + outputs[7] + " " + outputs[8] + " " +
-                            outputs[9] + " " + outputs[10] + " " + outputs[11] + " " +
-                            outputs[12] + " " + outputs[13] + " " + outputs[14] + " " +
-                            outputs[15] + "\n";
-                    try {
-                        out = new FileOutputStream(file, true);
-                        out.write(output.getBytes());
-                        out.close();
-                        Toast.makeText(context, "Due to no Internet access, data has been sent to a local file. Contact " +
-                                "Quentin or Kevin for further assistance", Toast.LENGTH_LONG).show();
-                    } catch(IOException e) {
-                        Toast.makeText(context, "Error writing data to file", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                        return false;
-                    }
-                } else {
-                    Toast.makeText(context, "External Storage not readable", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-                return true;
-            }
-
-            private boolean isExternalStorageWritable() {
-                /* Checks if external storage is available for read and write */
-                return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
-            }
-
-            private boolean isInternetConnected(Context context) {
-                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-            }
-
             private void resetFields() {
                 teamNumber.setText("");
                 breachInAutoBox.setChecked(false);
@@ -344,6 +292,57 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean writeToFile() {
+        if(isExternalStorageWritable()) {
+            File fileDirectory = new File(Environment.getExternalStorageDirectory() + "/Documents");
+            boolean isPresent = true;
+            if(!fileDirectory.exists()) {
+                isPresent = fileDirectory.mkdir();
+            }
+            File file;
+            if(isPresent) {
+                file = new File(fileDirectory.getAbsolutePath(), "Stronghold Scouting App Data.txt");
+            } else {
+                Toast.makeText(context, "Unable to create file", Toast.LENGTH_LONG).show();
+                return false;
+            }
+            FileOutputStream out;
+            String output = "";
+            output += outputs[0] + " " + outputs[1] + " " + outputs[2] + " " +
+                    outputs[3] + " " + outputs[4] + " " + outputs[5] + " " +
+                    outputs[6] + " " + outputs[7] + " " + outputs[8] + " " +
+                    outputs[9] + " " + outputs[10] + " " + outputs[11] + " " +
+                    outputs[12] + " " + outputs[13] + " " + outputs[14] + " " +
+                    outputs[15] + "\n";
+            try {
+                out = new FileOutputStream(file, true);
+                out.write(output.getBytes());
+                out.close();
+                Toast.makeText(context, "Due to no Internet access, data has been sent to a local file. Contact " +
+                        "Quentin or Kevin for further assistance", Toast.LENGTH_LONG).show();
+            } catch(IOException e) {
+                Toast.makeText(context, "Error writing data to file", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            Toast.makeText(context, "External Storage not readable", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isExternalStorageWritable() {
+                /* Checks if external storage is available for read and write */
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+    }
+
+    private boolean isInternetConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     @Override
