@@ -4,13 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,20 +29,15 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.SecurityPermission;
 import java.util.HashMap;
-import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity {
-    public static final MediaType FORM_DATA_TYPE
-            = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
+    public static final MediaType FORM_DATA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
 
     private final String oldURL = "https://docs.google.com/forms/d/1U7hJDI5br8rYoKiXTo5J0Kh3n9xztI07dDNLO9gIhCY/formResponse";
     private final String newURL = "https://docs.google.com/forms/d/1rw99PhRbHt8msdHyT9XMaVftszPc0hta2RW-UosU0YI/formResponse";
@@ -73,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
     private ScrollView scrollView;
     private EditText teamNumber;
-    private TextView autonomousText;
     private CheckBox breachInAutoBox;
     private CheckBox scoresInAutoBox;
     private Spinner scoreInAutoSpinner;
@@ -155,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
             defenseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             defense.setAdapter(defenseAdapter);
         }
-
         //SCROLL VIEW HACK: fixes annoying bug where the screen scrolls to an EditText view after scrolling/pressing a button
         //BOGUS, but it works. DO NOT CHANGE or REMOVE.
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
@@ -240,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                 numberInLowGoalText.setText("");
                 canHangBox.setChecked(false);
                 defendsBox.setChecked(false);
-                for (Spinner defense : defenses) {
+                for(Spinner defense : defenses) {
                     defense.setSelection(0);
                 }
                 lowBarSpinner.setSelection(0);
@@ -250,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         scoresInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
+                if(!isChecked) {
                     scoreInAutoSpinner.setSelection(0);
                     scoreInAutoSpinner.setVisibility(View.GONE);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) teleOpText.getLayoutParams();
@@ -266,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
         scoreInHighGoalBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
+                if(!isChecked) {
                     numberInHighGoalText.setVisibility(View.GONE);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) scoreInLowGoalBox.getLayoutParams();
                     params.addRule(RelativeLayout.BELOW, R.id.scoreInHighGoalBox);
@@ -281,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         scoreInLowGoalBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
+                if(!isChecked) {
                     numberInLowGoalText.setVisibility(View.GONE);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) canHangBox.getLayoutParams();
                     params.addRule(RelativeLayout.BELOW, R.id.scoreInLowGoalBox);
@@ -335,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isExternalStorageWritable() {
-                /* Checks if external storage is available for read and write */
+        /* Checks if external storage is available for read and write */
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
