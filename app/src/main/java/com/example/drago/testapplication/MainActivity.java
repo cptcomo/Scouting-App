@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Make sure all the fields are filled with values
-                if (TextUtils.isEmpty(teamNumber.getText().toString())) {
+                if(TextUtils.isEmpty(teamNumber.getText().toString())) {
                     Toast.makeText(context, "Please enter a team number", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(connectedToInternet || wroteToFile) {
                     resetFields();
+                    scrollView.scrollTo(0, 0);
                 }
             }
 
@@ -396,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result){
             //Print Success or failure message accordingly
-            Toast.makeText(context , result ? "Message successfully sent!" : "There was some error in sending message. Please try again after some time.", Toast.LENGTH_LONG).show();
+            Toast.makeText(context , result ? "Data successfully sent!" : "There was some error in sending Data. Please try again after some time.", Toast.LENGTH_LONG).show();
         }
     }
 }
