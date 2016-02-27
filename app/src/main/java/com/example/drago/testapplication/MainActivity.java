@@ -4,13 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,20 +29,15 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.SecurityPermission;
 import java.util.HashMap;
-import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity {
-    public static final MediaType FORM_DATA_TYPE
-            = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
+    public static final MediaType FORM_DATA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
 
     private final String oldURL = "https://docs.google.com/forms/d/1U7hJDI5br8rYoKiXTo5J0Kh3n9xztI07dDNLO9gIhCY/formResponse";
     private final String newURL = "https://docs.google.com/forms/d/1rw99PhRbHt8msdHyT9XMaVftszPc0hta2RW-UosU0YI/formResponse";
@@ -73,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
     private ScrollView scrollView;
     private EditText teamNumber;
-    private TextView autonomousText;
     private CheckBox breachInAutoBox;
     private CheckBox scoresInAutoBox;
     private Spinner scoreInAutoSpinner;
@@ -155,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
             defenseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             defense.setAdapter(defenseAdapter);
         }
-
         //SCROLL VIEW HACK: fixes annoying bug where the screen scrolls to an EditText view after scrolling/pressing a button
         //BOGUS, but it works. DO NOT CHANGE or REMOVE.
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
@@ -172,23 +162,19 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //Make sure all the fields are filled with values
-                if (TextUtils.isEmpty(teamNumber.getText().toString()))
-                        /*|| TextUtils.isEmpty(question1.getText().toString()) ||
-                        TextUtils.isEmpty(question2.getText().toString()) ||
-                        TextUtils.isEmpty(question3.getText().toString()))*/ {
+                if (TextUtils.isEmpty(teamNumber.getText().toString())) {
                     Toast.makeText(context, "Please enter a team number", Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if(scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")){
-                    Toast.makeText(context, "You checked that the robot can score in the high goal, but not how many", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if(scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")){
-                    Toast.makeText(context, "You checked that the robot can score in the high goal, but not how many", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -217,67 +203,20 @@ public class MainActivity extends AppCompatActivity {
                 outputs[13] = defensesValue.get(rockWallSpinner.getSelectedItem().toString());
                 outputs[14] = defensesValue.get(roughTerrainSpinner.getSelectedItem().toString());
                 outputs[15] = lowBarSpinner.getSelectedItem().toString() == "Breached" ? "1" : "-1";
-                //execute asynctask
 
-                if(isInternetConnected(context)) {
+                boolean connectedToInternet = isInternetConnected(context);
+                boolean wroteToFile = false;
+                if(connectedToInternet) {
                     postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
                             outputs[0],outputs[1],outputs[2],outputs[3],outputs[4],outputs[5],outputs[6],outputs[7],outputs[8],
                             outputs[9],outputs[10],outputs[11],outputs[12],outputs[13],outputs[14],outputs[15]
                     );
                 } else {
-                    writeToFile();
+                    wroteToFile = writeToFile();
                 }
-                resetFields();
-            }
-
-            private void writeToFile() {
-                if(isExternalStorageWritable()) {
-                    File fileDirectory = new File(Environment.getExternalStorageDirectory() + "/Documents");
-                    boolean isPresent = true;
-                    if(!fileDirectory.exists()) {
-                        isPresent = fileDirectory.mkdir();
-                    }
-                    File file;
-                    if(isPresent) {
-                        file = new File(fileDirectory.getAbsolutePath(), "Stronghold Scouting App Data.txt");
-                    } else {
-                        Toast.makeText(context, "Unable to create file", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    FileOutputStream out;
-                    String output = "";
-                    output += outputs[0] + " " + outputs[1] + " " + outputs[2] + " " +
-                            outputs[3] + " " + outputs[4] + " " + outputs[5] + " " +
-                            outputs[6] + " " + outputs[7] + " " + outputs[8] + " " +
-                            outputs[9] + " " + outputs[10] + " " + outputs[11] + " " +
-                            outputs[12] + " " + outputs[13] + " " + outputs[14] + " " +
-                            outputs[15] + "\n";
-                    try {
-                        out = new FileOutputStream(file, true);
-                        out.write(output.getBytes());
-                        out.close();
-                        Toast.makeText(context, "Due to no Internet access, data has been sent to a local file. Contact " +
-                                "Quentin or Kevin for further assistance", Toast.LENGTH_LONG).show();
-                    } catch(IOException e) {
-                        Toast.makeText(context, "Error writing data to file", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                } else {
-                    Toast.makeText(context, "External Storage not readable", Toast.LENGTH_LONG).show();
-                    return;
+                if(connectedToInternet || wroteToFile) {
+                    resetFields();
                 }
-            }
-
-            private boolean isExternalStorageWritable() {
-                /* Checks if external storage is available for read and write */
-                return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
-            }
-
-            private boolean isInternetConnected(Context context) {
-                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-                return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
             }
 
             private void resetFields() {
@@ -291,16 +230,17 @@ public class MainActivity extends AppCompatActivity {
                 numberInLowGoalText.setText("");
                 canHangBox.setChecked(false);
                 defendsBox.setChecked(false);
-                for (Spinner defense : defenses) {
+                for(Spinner defense : defenses) {
                     defense.setSelection(0);
                 }
+                lowBarSpinner.setSelection(0);
             }
         });
 
         scoresInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
+                if(!isChecked) {
                     scoreInAutoSpinner.setSelection(0);
                     scoreInAutoSpinner.setVisibility(View.GONE);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) teleOpText.getLayoutParams();
@@ -316,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
         scoreInHighGoalBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
+                if(!isChecked) {
                     numberInHighGoalText.setVisibility(View.GONE);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) scoreInLowGoalBox.getLayoutParams();
                     params.addRule(RelativeLayout.BELOW, R.id.scoreInHighGoalBox);
@@ -331,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         scoreInLowGoalBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
+                if(!isChecked) {
                     numberInLowGoalText.setVisibility(View.GONE);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) canHangBox.getLayoutParams();
                     params.addRule(RelativeLayout.BELOW, R.id.scoreInLowGoalBox);
@@ -344,9 +284,60 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private boolean writeToFile() {
+        if(isExternalStorageWritable()) {
+            File fileDirectory = new File(Environment.getExternalStorageDirectory() + "/Documents");
+            boolean isPresent = true;
+            if(!fileDirectory.exists()) {
+                isPresent = fileDirectory.mkdir();
+            }
+            File file;
+            if(isPresent) {
+                file = new File(fileDirectory.getAbsolutePath(), "Stronghold Scouting App Data.txt");
+            } else {
+                Toast.makeText(context, "Unable to create file", Toast.LENGTH_LONG).show();
+                return false;
+            }
+            FileOutputStream out;
+            String output = "";
+            output += outputs[0] + " " + outputs[1] + " " + outputs[2] + " " +
+                    outputs[3] + " " + outputs[4] + " " + outputs[5] + " " +
+                    outputs[6] + " " + outputs[7] + " " + outputs[8] + " " +
+                    outputs[9] + " " + outputs[10] + " " + outputs[11] + " " +
+                    outputs[12] + " " + outputs[13] + " " + outputs[14] + " " +
+                    outputs[15] + "\n";
+            try {
+                out = new FileOutputStream(file, true);
+                out.write(output.getBytes());
+                out.close();
+                Toast.makeText(context, "Due to no Internet access, data has been sent to a local file. Contact " +
+                        "Quentin or Kevin for further assistance", Toast.LENGTH_LONG).show();
+            } catch(IOException e) {
+                Toast.makeText(context, "Error writing data to file", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            Toast.makeText(context, "External Storage not readable", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isExternalStorageWritable() {
+        /* Checks if external storage is available for read and write */
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+    }
+
+    private boolean isInternetConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if( keyCode == KeyEvent.KEYCODE_MENU ) {
+        if(keyCode == KeyEvent.KEYCODE_MENU ) {
             // do nothing
             return true;
         }
@@ -359,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... contactData) {
             Boolean result = true;
             String url = contactData[0];
-            String postBody="";
+            String postBody = "";
 
             try {
                 //all values must be URL encoded to make sure that special characters like & | ",etc.
@@ -382,18 +373,8 @@ public class MainActivity extends AppCompatActivity {
                         "&" + LOW_BAR_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[16],"UTF-8")
                 ;
             } catch (UnsupportedEncodingException ex) {
-                result=false;
+                result = false;
             }
-
-            /*
-            //If you want to use HttpRequest class from http://stackoverflow.com/a/2253280/1261816
-            try {
-			HttpRequest httpRequest = new HttpRequest();
-			httpRequest.sendPost(url, postBody);
-		}catch (Exception exception){
-			result = false;
-		}
-            */
 
             try{
                 //Create OkHttpClient for sending request
@@ -407,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
                 //Send the request
                 Response response = client.newCall(request).execute();
             }catch (IOException exception){
-                result=false;
+                result = false;
             }
             return result;
         }
@@ -415,9 +396,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result){
             //Print Success or failure message accordingly
-            Toast.makeText(context,result?"Message successfully sent!":"There was some error in sending message. Please try again after some time.",Toast.LENGTH_LONG).show();
+            Toast.makeText(context , result ? "Message successfully sent!" : "There was some error in sending message. Please try again after some time.", Toast.LENGTH_LONG).show();
         }
-
     }
 }
 
