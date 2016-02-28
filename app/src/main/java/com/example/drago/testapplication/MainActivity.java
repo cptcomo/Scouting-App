@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -87,11 +89,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView versionText;
 
     private final EditText[] editTexts = {numberInHighGoalText, numberInLowGoalText};
+    private Spinner[] defenses;
 
     private final String VERSION_NAME = BuildConfig.VERSION_NAME;
 
     private String[] outputs;
-
+    
+    private long longPressTimeout = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -101,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         context = this;
 
         //Get references to UI elements in the layout
-        Button sendButton = (Button)findViewById(R.id.sendButton);
+        final Button sendButton = (Button)findViewById(R.id.sendButton);
         scrollView = (ScrollView)findViewById(R.id.scrollView1);
         teamNumber = (EditText)findViewById(R.id.teamNumber);
         breachInAutoBox = (CheckBox)findViewById(R.id.breachInAutonomousText);
@@ -125,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
         lowBarSpinner = (Spinner)findViewById(R.id.lowBarSpinner);
         versionText = (TextView)findViewById(R.id.versionText);
 
+        defenses = new Spinner[]{portcullisSpinner, chevelDeFriseSpinner, moatSpinner, rampartsSpinner,
+                drawbridgeSpinner, sallyPortSpinner, rockWallSpinner, roughTerrainSpinner};
         versionText.setText("Version: " + VERSION_NAME);
 
         String[] scoreInAutoItems = new String[]{"Low", "High"};
@@ -138,8 +144,6 @@ public class MainActivity extends AppCompatActivity {
         lowBarSpinner.setAdapter(lowbarAdapter);
 
         final String[] defensesItems = new String[]{"Not on field", "Breached", "Didn't breach"};
-        final Spinner[] defenses = {portcullisSpinner, chevelDeFriseSpinner, moatSpinner, rampartsSpinner,
-                drawbridgeSpinner, sallyPortSpinner, rockWallSpinner, roughTerrainSpinner};
 
         for(Spinner defense : defenses) {
             ArrayAdapter<String> defenseAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, defensesItems);
@@ -158,9 +162,24 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        sendButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    long eventDuration = event.getEventTime() - event.getDownTime();
+                    if (eventDuration > longPressTimeout) {
+                        send(true);
+                        return false;
+                    } else {
+                        send(false);
+                        return false;
+                    }
+                }
+                return false;
+            }
+        });
+        /*
+        sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Make sure all the fields are filled with values
                 if (TextUtils.isEmpty(teamNumber.getText().toString())) {
@@ -168,13 +187,25 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")){
+                if (scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")) {
                     Toast.makeText(context, "You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                if(scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")){
+                if (scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")) {
                     Toast.makeText(context, "You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                int numberOfNotOnFieldCount = 0;
+                for (Spinner defense : defenses) {
+                    if (defense.getSelectedItem().toString().equals("Not on field")) {
+                        numberOfNotOnFieldCount++;
+                    }
+                }
+                if (numberOfNotOnFieldCount > 5) {
+                    int missingDefenses = numberOfNotOnFieldCount - 5;
+                    Toast.makeText(context, "You didn't enter data for " + missingDefenses + " " + (missingDefenses == 1 ? "defense" : "defenses"), Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -206,16 +237,17 @@ public class MainActivity extends AppCompatActivity {
 
                 boolean connectedToInternet = isInternetConnected(context);
                 boolean wroteToFile = false;
-                if(connectedToInternet) {
+                if (connectedToInternet) {
                     postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
-                            outputs[0],outputs[1],outputs[2],outputs[3],outputs[4],outputs[5],outputs[6],outputs[7],outputs[8],
-                            outputs[9],outputs[10],outputs[11],outputs[12],outputs[13],outputs[14],outputs[15]
+                            outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
+                            outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15]
                     );
                 } else {
                     wroteToFile = writeToFile();
                 }
-                if(connectedToInternet || wroteToFile) {
+                if (connectedToInternet || wroteToFile) {
                     resetFields();
+                    scrollView.scrollTo(0, 0);
                 }
             }
 
@@ -230,13 +262,12 @@ public class MainActivity extends AppCompatActivity {
                 numberInLowGoalText.setText("");
                 canHangBox.setChecked(false);
                 defendsBox.setChecked(false);
-                for(Spinner defense : defenses) {
+                for (Spinner defense : defenses) {
                     defense.setSelection(0);
                 }
                 lowBarSpinner.setSelection(0);
             }
-        });
-
+        }); */
         scoresInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -284,6 +315,93 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void send(boolean forceSend){
+        //Make sure all the fields are filled with values
+        if (TextUtils.isEmpty(teamNumber.getText().toString())) {
+            Toast.makeText(context, "Please enter a team number", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")) {
+            Toast.makeText(context, "You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")) {
+            Toast.makeText(context, "You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(!forceSend){
+            int numberOfNotOnFieldCount = 0;
+            for (Spinner defense : defenses) {
+                if (defense.getSelectedItem().toString().equals("Not on field")) {
+                    numberOfNotOnFieldCount++;
+                }
+            }
+            if (numberOfNotOnFieldCount > 5) {
+                int missingDefenses = numberOfNotOnFieldCount - 5;
+                Toast.makeText(context, "You didn't enter data for " + missingDefenses + " " + (missingDefenses == 1 ? "defense" : "defenses"), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+        //Create an object for PostDataTask AsyncTask
+        PostDataTask postDataTask = new PostDataTask();
+
+        HashMap<String, String> defensesValue = new HashMap<String, String>();
+        defensesValue.put("Not on field", "0");
+        defensesValue.put("Breached", "1");
+        defensesValue.put("Didn't breach", "-1");
+
+        outputs = new String[16];
+        outputs[0] = teamNumber.getText().toString();
+        outputs[1] = breachInAutoBox.isChecked() ? "1" : "-1";
+        outputs[2] = scoresInAutoBox.isChecked() ? (scoreInAutoSpinner.getSelectedItem().toString() == "Low" ? "1" : "2") : "-1";
+        outputs[3] = scoreInHighGoalBox.isChecked() ? (String.valueOf(numberInHighGoalText.getText())) : "0";
+        outputs[4] = scoreInLowGoalBox.isChecked() ? String.valueOf(numberInLowGoalText.getText()) : "0";
+        outputs[5] = canHangBox.isChecked() ? "1" : "-1";
+        outputs[6] = defendsBox.isChecked() ? "1" : "-1";
+        outputs[7] = defensesValue.get(portcullisSpinner.getSelectedItem().toString());
+        outputs[8] = defensesValue.get(chevelDeFriseSpinner.getSelectedItem().toString());
+        outputs[9] = defensesValue.get(moatSpinner.getSelectedItem().toString());
+        outputs[10] = defensesValue.get(rampartsSpinner.getSelectedItem().toString());
+        outputs[11] = defensesValue.get(drawbridgeSpinner.getSelectedItem().toString());
+        outputs[12] = defensesValue.get(sallyPortSpinner.getSelectedItem().toString());
+        outputs[13] = defensesValue.get(rockWallSpinner.getSelectedItem().toString());
+        outputs[14] = defensesValue.get(roughTerrainSpinner.getSelectedItem().toString());
+        outputs[15] = lowBarSpinner.getSelectedItem().toString() == "Breached" ? "1" : "-1";
+
+        boolean connectedToInternet = isInternetConnected(context);
+        boolean wroteToFile = false;
+        if (connectedToInternet) {
+            postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
+                    outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
+                    outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15]
+            );
+        } else {
+            wroteToFile = writeToFile();
+        }
+        if (connectedToInternet || wroteToFile) {
+            resetFields();
+            scrollView.scrollTo(0, 0);
+        }
+    }
+    private void resetFields() {
+        teamNumber.setText("");
+        breachInAutoBox.setChecked(false);
+        scoresInAutoBox.setChecked(false);
+        scoreInAutoSpinner.setSelection(0);
+        scoreInHighGoalBox.setChecked(false);
+        numberInHighGoalText.setText("");
+        scoreInLowGoalBox.setChecked(false);
+        numberInLowGoalText.setText("");
+        canHangBox.setChecked(false);
+        defendsBox.setChecked(false);
+        for (Spinner defense : defenses) {
+            defense.setSelection(0);
+        }
+        lowBarSpinner.setSelection(0);
+    }
     private boolean writeToFile() {
         if(isExternalStorageWritable()) {
             File fileDirectory = new File(Environment.getExternalStorageDirectory() + "/Documents");
@@ -396,7 +514,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result){
             //Print Success or failure message accordingly
-            Toast.makeText(context , result ? "Message successfully sent!" : "There was some error in sending message. Please try again after some time.", Toast.LENGTH_LONG).show();
+            Toast.makeText(context , result ? "Data successfully sent!" : "There was some error in sending Data. Please try again after some time.", Toast.LENGTH_LONG).show();
         }
     }
 }
