@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -165,9 +166,9 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
+                if(event.getAction() == MotionEvent.ACTION_UP){
                     long eventDuration = event.getEventTime() - event.getDownTime();
-                    if (eventDuration > longPressTimeout) {
+                    if(eventDuration > longPressTimeout){
                         send(true);
                         return false;
                     } else {
@@ -178,96 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        /*
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //Make sure all the fields are filled with values
-                if (TextUtils.isEmpty(teamNumber.getText().toString())) {
-                    Toast.makeText(context, "Please enter a team number", Toast.LENGTH_LONG).show();
-                    return;
-                }
 
-                if (scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")) {
-                    Toast.makeText(context, "You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")) {
-                    Toast.makeText(context, "You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                int numberOfNotOnFieldCount = 0;
-                for (Spinner defense : defenses) {
-                    if (defense.getSelectedItem().toString().equals("Not on field")) {
-                        numberOfNotOnFieldCount++;
-                    }
-                }
-                if (numberOfNotOnFieldCount > 5) {
-                    int missingDefenses = numberOfNotOnFieldCount - 5;
-                    Toast.makeText(context, "You didn't enter data for " + missingDefenses + " " + (missingDefenses == 1 ? "defense" : "defenses"), Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                //Create an object for PostDataTask AsyncTask
-                PostDataTask postDataTask = new PostDataTask();
-
-                HashMap<String, String> defensesValue = new HashMap<String, String>();
-                defensesValue.put("Not on field", "0");
-                defensesValue.put("Breached", "1");
-                defensesValue.put("Didn't breach", "-1");
-
-                outputs = new String[16];
-                outputs[0] = teamNumber.getText().toString();
-                outputs[1] = breachInAutoBox.isChecked() ? "1" : "-1";
-                outputs[2] = scoresInAutoBox.isChecked() ? (scoreInAutoSpinner.getSelectedItem().toString() == "Low" ? "1" : "2") : "-1";
-                outputs[3] = scoreInHighGoalBox.isChecked() ? (String.valueOf(numberInHighGoalText.getText())) : "0";
-                outputs[4] = scoreInLowGoalBox.isChecked() ? String.valueOf(numberInLowGoalText.getText()) : "0";
-                outputs[5] = canHangBox.isChecked() ? "1" : "-1";
-                outputs[6] = defendsBox.isChecked() ? "1" : "-1";
-                outputs[7] = defensesValue.get(portcullisSpinner.getSelectedItem().toString());
-                outputs[8] = defensesValue.get(chevelDeFriseSpinner.getSelectedItem().toString());
-                outputs[9] = defensesValue.get(moatSpinner.getSelectedItem().toString());
-                outputs[10] = defensesValue.get(rampartsSpinner.getSelectedItem().toString());
-                outputs[11] = defensesValue.get(drawbridgeSpinner.getSelectedItem().toString());
-                outputs[12] = defensesValue.get(sallyPortSpinner.getSelectedItem().toString());
-                outputs[13] = defensesValue.get(rockWallSpinner.getSelectedItem().toString());
-                outputs[14] = defensesValue.get(roughTerrainSpinner.getSelectedItem().toString());
-                outputs[15] = lowBarSpinner.getSelectedItem().toString() == "Breached" ? "1" : "-1";
-
-                boolean connectedToInternet = isInternetConnected(context);
-                boolean wroteToFile = false;
-                if (connectedToInternet) {
-                    postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
-                            outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
-                            outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15]
-                    );
-                } else {
-                    wroteToFile = writeToFile();
-                }
-                if (connectedToInternet || wroteToFile) {
-                    resetFields();
-                    scrollView.scrollTo(0, 0);
-                }
-            }
-
-            private void resetFields() {
-                teamNumber.setText("");
-                breachInAutoBox.setChecked(false);
-                scoresInAutoBox.setChecked(false);
-                scoreInAutoSpinner.setSelection(0);
-                scoreInHighGoalBox.setChecked(false);
-                numberInHighGoalText.setText("");
-                scoreInLowGoalBox.setChecked(false);
-                numberInLowGoalText.setText("");
-                canHangBox.setChecked(false);
-                defendsBox.setChecked(false);
-                for (Spinner defense : defenses) {
-                    defense.setSelection(0);
-                }
-                lowBarSpinner.setSelection(0);
-            }
-        }); */
         scoresInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -318,17 +230,17 @@ public class MainActivity extends AppCompatActivity {
     private void send(boolean forceSend){
         //Make sure all the fields are filled with values
         if (TextUtils.isEmpty(teamNumber.getText().toString())) {
-            Toast.makeText(context, "Please enter a team number", Toast.LENGTH_LONG).show();
+            displayText("Please enter a team number", Toast.LENGTH_LONG);
             return;
         }
 
         if (scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")) {
-            Toast.makeText(context, "You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG).show();
+            displayText("You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG);
             return;
         }
 
         if (scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")) {
-            Toast.makeText(context, "You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG).show();
+            displayText("You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG);
             return;
         }
 
@@ -341,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (numberOfNotOnFieldCount > 5) {
                 int missingDefenses = numberOfNotOnFieldCount - 5;
-                Toast.makeText(context, "You didn't enter data for " + missingDefenses + " " + (missingDefenses == 1 ? "defense" : "defenses"), Toast.LENGTH_LONG).show();
+                displayText("You didn't enter data for " + missingDefenses + " " + (missingDefenses == 1 ? "defense" : "defenses"), Toast.LENGTH_LONG);
                 return;
             }
         }
@@ -413,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
             if(isPresent) {
                 file = new File(fileDirectory.getAbsolutePath(), "Stronghold Scouting App Data.txt");
             } else {
-                Toast.makeText(context, "Unable to create file", Toast.LENGTH_LONG).show();
+                displayText("Error: unable to create file", Toast.LENGTH_LONG);
                 return false;
             }
             FileOutputStream out;
@@ -428,15 +340,15 @@ public class MainActivity extends AppCompatActivity {
                 out = new FileOutputStream(file, true);
                 out.write(output.getBytes());
                 out.close();
-                Toast.makeText(context, "Due to no Internet access, data has been sent to a local file. Contact " +
-                        "Quentin or Kevin for further assistance", Toast.LENGTH_LONG).show();
+                displayText("Due to no Internet access, data has been stored in a local file. Contact " +
+                        "Quentin or Kevin for further assistance", Toast.LENGTH_LONG);
             } catch(IOException e) {
-                Toast.makeText(context, "Error writing data to file", Toast.LENGTH_LONG).show();
+                displayText("ERROR: Error writing data to file", Toast.LENGTH_LONG);
                 e.printStackTrace();
                 return false;
             }
         } else {
-            Toast.makeText(context, "External Storage not readable", Toast.LENGTH_LONG).show();
+            displayText("ERROR: External storage not readable", Toast.LENGTH_LONG);
             return false;
         }
         return true;
@@ -453,6 +365,11 @@ public class MainActivity extends AppCompatActivity {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
+    private void displayText(String text, int duration){
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.TOP, 0, 10);
+        toast.show();
+    }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_MENU ) {
@@ -514,7 +431,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result){
             //Print Success or failure message accordingly
-            Toast.makeText(context , result ? "Data successfully sent!" : "There was some error in sending Data. Please try again after some time.", Toast.LENGTH_LONG).show();
+            displayText(result ? "Data successfully sent!" : "There was some error in sending Data. Please try again after some time.", Toast.LENGTH_LONG);
         }
     }
 }
