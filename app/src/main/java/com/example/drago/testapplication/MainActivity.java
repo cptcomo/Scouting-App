@@ -1,6 +1,7 @@
 package com.example.drago.testapplication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -368,6 +369,9 @@ public class MainActivity extends AppCompatActivity {
     private void displayText(String text, int duration){
         Toast toast = Toast.makeText(context, text, duration);
         toast.setGravity(Gravity.TOP, 0, 10);
+        toast.getView().setBackgroundColor(Color.rgb(255, 30, 30));
+        TextView v = (TextView)toast.getView().findViewById(android.R.id.message);
+        v.setTextColor(Color.YELLOW);
         toast.show();
     }
     @Override
