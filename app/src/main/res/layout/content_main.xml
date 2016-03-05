@@ -366,6 +366,16 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="RESET ONLY"
+        android:textColor="@color/blue"
+        android:id="@+id/resetButton"
+        android:layout_below="@+id/lowBarSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="SEND"
         android:textColor="@color/blue"
         android:id="@+id/sendButton"

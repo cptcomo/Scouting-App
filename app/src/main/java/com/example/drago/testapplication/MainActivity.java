@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Get references to UI elements in the layout
         final Button sendButton = (Button)findViewById(R.id.sendButton);
+        final Button resetButton = (Button)findViewById(R.id.resetButton);
         scrollView = (ScrollView)findViewById(R.id.scrollView1);
         teamNumber = (EditText)findViewById(R.id.teamNumber);
         breachInAutoBox = (CheckBox)findViewById(R.id.breachInAutonomousText);
@@ -152,11 +153,11 @@ public class MainActivity extends AppCompatActivity {
             ArrayAdapter<String> defenseAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, defensesItems);
             defenseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             defense.setAdapter(defenseAdapter);
-            defense.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            defense.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     TextView t = (TextView) parent.getChildAt(0);
-                    if(t != null){
+                    if (t != null) {
                         t.setTextColor(getResources().getColor(R.color.white));
                     } else {
                         displayText("t is null", Toast.LENGTH_LONG);
@@ -212,7 +213,14 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayText("Resetting all fields", Toast.LENGTH_LONG);
+                resetFields();
+                scrollView.scrollTo(0,0);
+            }
+        });
         scoresInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
