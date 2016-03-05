@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -130,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         roughTerrainSpinner = (Spinner)findViewById(R.id.roughTerrainSpinner);
         lowBarSpinner = (Spinner)findViewById(R.id.lowBarSpinner);
         versionText = (TextView)findViewById(R.id.versionText);
-
         defenses = new Spinner[]{portcullisSpinner, chevelDeFriseSpinner, moatSpinner, rampartsSpinner,
                 drawbridgeSpinner, sallyPortSpinner, rockWallSpinner, roughTerrainSpinner};
         versionText.setText("Version: " + VERSION_NAME);
@@ -151,7 +152,38 @@ public class MainActivity extends AppCompatActivity {
             ArrayAdapter<String> defenseAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, defensesItems);
             defenseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             defense.setAdapter(defenseAdapter);
+            defense.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    TextView t = (TextView) parent.getChildAt(0);
+                    if(t != null){
+                        t.setTextColor(getResources().getColor(R.color.white));
+                    } else {
+                        displayText("t is null", Toast.LENGTH_LONG);
+                    }
+                    //((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
         }
+        lowBarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView t = (TextView)parent.getChildAt(0);
+                if(t != null){
+                    t.setTextColor(getResources().getColor(R.color.white));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         //SCROLL VIEW HACK: fixes annoying bug where the screen scrolls to an EditText view after scrolling/pressing a button
         //BOGUS, but it works. DO NOT CHANGE or REMOVE.
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);

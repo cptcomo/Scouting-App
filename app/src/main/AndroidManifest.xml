@@ -16,6 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:label="1086 FRC Stronghold scouting app"
             android:theme="@style/AppTheme.NoActionBar">
             android:windowSoftInputMode="adjustPan">

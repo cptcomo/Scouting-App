@@ -81,7 +81,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TeleOp"
+        android:text="Tele-Op"
         android:textColor="@color/yellow"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -177,7 +177,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Portcullis(Lifted gate):"
+        android:text="Portcullis (Lifted gate):"
         android:layout_marginTop="2dp"
         android:textColor="@color/yellow"
         android:id="@+id/portcullisText"
@@ -198,7 +198,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chevel De Frise(See-saw):"
+        android:text="Cheval De Frise (See-saw):"
         android:layout_marginTop="2dp"
         android:id="@+id/chevelDeFriseText"
         android:textColor="@color/yellow"
@@ -240,7 +240,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ramparts(Metal ramps):"
+        android:text="Ramparts (Metal ramps):"
         android:textColor="@color/yellow"
         android:layout_marginTop="2dp"
         android:id="@+id/rampartsText"
