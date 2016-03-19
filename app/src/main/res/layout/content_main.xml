@@ -26,11 +26,23 @@
         android:textColor="@color/yellow"
         android:textColorHint="@color/yellow"
         android:ems="10"
+        android:id="@+id/matchNumber"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:hint="Match Number" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:textColor="@color/yellow"
+        android:textColorHint="@color/yellow"
+        android:ems="10"
         android:id="@+id/teamNumber"
+        android:layout_below="@id/matchNumber"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:hint="Team Number" />
-
 
     <TextView
         android:layout_width="wrap_content"
@@ -369,7 +381,7 @@
         android:text="RESET ONLY"
         android:textColor="@color/blue"
         android:id="@+id/resetButton"
-        android:layout_below="@+id/lowBarSpinner"
+        android:layout_below="@+id/commentsText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -379,9 +391,22 @@
         android:text="SEND"
         android:textColor="@color/blue"
         android:id="@+id/sendButton"
-        android:layout_below="@+id/lowBarSpinner"
+        android:layout_below="@+id/commentsText"
         android:layout_toRightOf="@+id/teamNumber"
         android:layout_toEndOf="@+id/teamNumber" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:textColor="@color/yellow"
+        android:textColorHint="@color/yellow"
+        android:ems="10"
+        android:id="@+id/commentsText"
+        android:layout_below="@id/lowBarSpinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:hint="Additional comments" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -389,7 +414,7 @@
         android:text="Version: "
         android:textColor="@color/yellow"
         android:id="@+id/versionText"
-        android:layout_below="@+id/sendButton"
+        android:layout_below="@+id/resetButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

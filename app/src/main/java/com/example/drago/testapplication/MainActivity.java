@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     //input element ids found from the live form page
     public static final String[] TEAM_NUMBER_KEY = {"entry_1577205917", "entry_1450594725"};
+    public static final String[] MATCH_NUMBER_KEY = {"", "entry_1966563731"};
     public static final String[] BREACHES_DEFENSES_IN_AUTONOMOUS_KEY = {"entry_1309176866", "entry_2004340847"};
     public static final String[] SCORE_IN_AUTONOMOUS_KEY = {"entry_365970572", "entry_1072905336"};
     public static final String[] SCORE_IN_HIGH_GOAL_KEY = {"entry_1686842457", "entry_1861626737"};
@@ -67,9 +68,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String[] ROCK_WALL_KEY = {"entry_559108952", "entry_613405738"};
     public static final String[] ROUGH_TERRAIN_KEY = {"entry_439784406", "entry_774349350"};
     public static final String[] LOW_BAR_KEY = {"entry_631241315", "entry_1940807735"};
+    public static final String[] COMMENTS_KEY = {"", "entry_1127654160"};
 
     private Context context;
     private ScrollView scrollView;
+    private EditText matchNumber;
     private EditText teamNumber;
     private CheckBox breachInAutoBox;
     private CheckBox scoresInAutoBox;
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner rockWallSpinner;
     private Spinner roughTerrainSpinner;
     private Spinner lowBarSpinner;
+    private EditText commentsText;
     private TextView versionText;
 
     private final EditText[] editTexts = {numberInHighGoalText, numberInLowGoalText};
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         final Button sendButton = (Button)findViewById(R.id.sendButton);
         final Button resetButton = (Button)findViewById(R.id.resetButton);
         scrollView = (ScrollView)findViewById(R.id.scrollView1);
+        matchNumber = (EditText)findViewById(R.id.matchNumber);
         teamNumber = (EditText)findViewById(R.id.teamNumber);
         breachInAutoBox = (CheckBox)findViewById(R.id.breachInAutonomousText);
         scoresInAutoBox = (CheckBox)findViewById(R.id.scoresInAutonomousText);
@@ -132,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         rockWallSpinner = (Spinner)findViewById(R.id.rockWallSpinner);
         roughTerrainSpinner = (Spinner)findViewById(R.id.roughTerrainSpinner);
         lowBarSpinner = (Spinner)findViewById(R.id.lowBarSpinner);
+        commentsText = (EditText)findViewById(R.id.commentsText);
         versionText = (TextView)findViewById(R.id.versionText);
         defenses = new Spinner[]{portcullisSpinner, chevelDeFriseSpinner, moatSpinner, rampartsSpinner,
                 drawbridgeSpinner, sallyPortSpinner, rockWallSpinner, roughTerrainSpinner};
@@ -270,29 +276,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void send(boolean forceSend){
         //Make sure all the fields are filled with values
-        if (TextUtils.isEmpty(teamNumber.getText().toString())) {
+        if(TextUtils.isEmpty(teamNumber.getText().toString())){
             displayText("Please enter a team number", Toast.LENGTH_LONG);
             return;
         }
 
-        if (scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")) {
+        if(scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")){
             displayText("You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG);
             return;
         }
 
-        if (scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")) {
+        if(scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")){
             displayText("You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG);
             return;
         }
 
         if(!forceSend){
             int numberOfNotOnFieldCount = 0;
-            for (Spinner defense : defenses) {
-                if (defense.getSelectedItem().toString().equals("Not on field")) {
+            for(Spinner defense : defenses){
+                if(defense.getSelectedItem().toString().equals("Not on field")){
                     numberOfNotOnFieldCount++;
                 }
             }
-            if (numberOfNotOnFieldCount > 5) {
+            if(numberOfNotOnFieldCount > 5){
                 int missingDefenses = numberOfNotOnFieldCount - 5;
                 displayText("You didn't enter data for " + missingDefenses + " " + (missingDefenses == 1 ? "defense" : "defenses"), Toast.LENGTH_LONG);
                 return;
@@ -306,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
         defensesValue.put("Breached", "1");
         defensesValue.put("Didn't breach", "-1");
 
-        outputs = new String[16];
+        outputs = new String[18];
         outputs[0] = teamNumber.getText().toString();
         outputs[1] = breachInAutoBox.isChecked() ? "1" : "-1";
         outputs[2] = scoresInAutoBox.isChecked() ? (scoreInAutoSpinner.getSelectedItem().toString() == "Low" ? "1" : "2") : "-1";
@@ -323,13 +329,15 @@ public class MainActivity extends AppCompatActivity {
         outputs[13] = defensesValue.get(rockWallSpinner.getSelectedItem().toString());
         outputs[14] = defensesValue.get(roughTerrainSpinner.getSelectedItem().toString());
         outputs[15] = lowBarSpinner.getSelectedItem().toString() == "Breached" ? "1" : "-1";
+        outputs[16] = matchNumber.getText().toString();
+        outputs[17] = commentsText.getText().toString();
 
         boolean connectedToInternet = isInternetConnected(context);
         boolean wroteToFile = false;
         if (connectedToInternet) {
             postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
                     outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
-                    outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15]
+                    outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17]
             );
         } else {
             wroteToFile = writeToFile();
@@ -339,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
             scrollView.scrollTo(0, 0);
         }
     }
-    private void resetFields() {
+    private void resetFields(){
         teamNumber.setText("");
         breachInAutoBox.setChecked(false);
         scoresInAutoBox.setChecked(false);
@@ -350,20 +358,22 @@ public class MainActivity extends AppCompatActivity {
         numberInLowGoalText.setText("");
         canHangBox.setChecked(false);
         defendsBox.setChecked(false);
-        for (Spinner defense : defenses) {
+        for(Spinner defense : defenses){
             defense.setSelection(0);
         }
         lowBarSpinner.setSelection(0);
+        matchNumber.setText("");
+        commentsText.setText("");
     }
-    private boolean writeToFile() {
-        if(isExternalStorageWritable()) {
+    private boolean writeToFile(){
+        if(isExternalStorageWritable()){
             File fileDirectory = new File(Environment.getExternalStorageDirectory() + "/Documents");
             boolean isPresent = true;
-            if(!fileDirectory.exists()) {
+            if(!fileDirectory.exists()){
                 isPresent = fileDirectory.mkdir();
             }
             File file;
-            if(isPresent) {
+            if(isPresent){
                 file = new File(fileDirectory.getAbsolutePath(), "Stronghold Scouting App Data.txt");
             } else {
                 displayText("Error: unable to create file", Toast.LENGTH_LONG);
@@ -395,12 +405,12 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean isExternalStorageWritable() {
+    private boolean isExternalStorageWritable(){
         /* Checks if external storage is available for read and write */
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
-    private boolean isInternetConnected(Context context) {
+    private boolean isInternetConnected(Context context){
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -415,8 +425,8 @@ public class MainActivity extends AppCompatActivity {
         toast.show();
     }
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_MENU ) {
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_MENU){
             // do nothing
             return true;
         }
@@ -426,11 +436,10 @@ public class MainActivity extends AppCompatActivity {
     //AsyncTask to send data as a http POST request
     private class PostDataTask extends AsyncTask<String, Void, Boolean> {
         @Override
-        protected Boolean doInBackground(String... contactData) {
+        protected Boolean doInBackground(String... contactData){
             Boolean result = true;
             String url = contactData[0];
             String postBody = "";
-
             try {
                 //all values must be URL encoded to make sure that special characters like & | ",etc.
                 //do not cause problems
@@ -449,13 +458,13 @@ public class MainActivity extends AppCompatActivity {
                         "&" + SALLY_PORT_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[13],"UTF-8") +
                         "&" + ROCK_WALL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[14],"UTF-8") +
                         "&" + ROUGH_TERRAIN_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[15],"UTF-8") +
-                        "&" + LOW_BAR_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[16],"UTF-8")
-                ;
-            } catch (UnsupportedEncodingException ex) {
+                        "&" + LOW_BAR_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[16],"UTF-8") +
+                        "&" + MATCH_NUMBER_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[17],"UTF-8") +
+                        "&" + COMMENTS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[18],"UTF-8");
+            } catch (UnsupportedEncodingException ex){
                 result = false;
             }
-
-            try{
+            try {
                 //Create OkHttpClient for sending request
                 OkHttpClient client = new OkHttpClient();
                 //Create the request body with the help of Media Type
