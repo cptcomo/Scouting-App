@@ -303,6 +303,11 @@ public class MainActivity extends AppCompatActivity {
                 displayText("You didn't enter data for " + missingDefenses + " " + (missingDefenses == 1 ? "defense" : "defenses"), Toast.LENGTH_LONG);
                 return;
             }
+
+            if(TextUtils.isEmpty(matchNumber.getText().toString())){
+                displayText("Please enter in the qualification match number", Toast.LENGTH_LONG);
+                return;
+            }
         }
         //Create an object for PostDataTask AsyncTask
         PostDataTask postDataTask = new PostDataTask();

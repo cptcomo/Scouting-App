@@ -174,249 +174,198 @@
         android:layout_alignParentStart="true"
         android:checked="false" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Defenses"
-        android:textColor="@color/yellow"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:id="@+id/defensesText"
-        android:layout_below="@+id/defendsBox"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/defenseSelectionLayout"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/defendsBox">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Defenses Selection"
+            android:textColor="@color/yellow"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:id="@+id/defensesSelectionText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_below="@id/defensesSelectionText"
+            android:layout_width="fill_parent"
+            android:id="@+id/classAGroup"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class A"
+                android:textColor="@color/yellow"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:id="@+id/classAText"
+                />
+            <RadioButton
+                android:id="@+id/portcullisButton"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Portcullis"
+                />
+            <RadioButton
+                android:id="@+id/chevalDeFriseButton"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cheval De Frise"
+                />
+        </RadioGroup>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_below="@id/classAGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/classBGroup"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class B"
+                android:textColor="@color/yellow"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:id="@+id/classBText"
+                />
+            <RadioButton
+                android:id="@+id/rampartsButton"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ramparts"
+                />
+            <RadioButton
+                android:id="@+id/moatButton"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Moat"
+                />
+        </RadioGroup>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_below="@id/classBGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/classCGroup"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class C"
+                android:textColor="@color/yellow"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:id="@+id/classBText"
+                />
+            <RadioButton
+                android:id="@+id/sallyPortButton"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sally Port"
+                />
+            <RadioButton
+                android:id="@+id/drawbridgeButton"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drawbridge"
+                />
+        </RadioGroup>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_below="@id/classCGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/classDGroup"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class D"
+                android:textColor="@color/yellow"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:id="@+id/classBText"
+                />
+            <RadioButton
+                android:id="@+id/sallyPortButton"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rough Terrain"
+                />
+            <RadioButton
+                android:id="@+id/drawbridgeButton"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rock Wall"
+                />
+        </RadioGroup>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/defenseSelectionLayout"
+        android:id="@+id/editDefensesLayout"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Portcullis (Lifted gate):"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/yellow"
-        android:id="@+id/portcullisText"
-        android:layout_below="@+id/defensesText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/portcullisSpinner"
-        android:textColor="@color/yellow"
-        android:layout_below="@+id/defensesText"
-        android:layout_toRightOf="@+id/portcullisText"
-        android:layout_toEndOf="@+id/portcullisText"
-        android:spinnerMode="dropdown" />
+    </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cheval De Frise (See-saw):"
-        android:layout_marginTop="2dp"
-        android:id="@+id/chevelDeFriseText"
-        android:textColor="@color/yellow"
-        android:layout_below="@+id/portcullisSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/yellow"
-        android:id="@+id/chevelDeFriseSpinner"
-        android:spinnerMode="dropdown"
-        android:layout_below="@+id/portcullisSpinner"
-        android:layout_toRightOf="@+id/chevelDeFriseText"
-        android:layout_toEndOf="@+id/chevelDeFriseText" />
+    <!--
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RESET ONLY"
+            android:textColor="@color/blue"
+            android:id="@+id/resetButton"
+            android:layout_below="@+id/commentsText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Moat:"
-        android:textColor="@color/yellow"
-        android:layout_marginTop="2dp"
-        android:id="@+id/moatText"
-        android:layout_below="@+id/chevelDeFriseSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SEND"
+            android:textColor="@color/blue"
+            android:id="@+id/sendButton"
+            android:layout_below="@+id/commentsText"
+            android:layout_toRightOf="@+id/teamNumber"
+            android:layout_toEndOf="@+id/teamNumber" />
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/moatSpinner"
-        android:spinnerMode="dropdown"
-        android:textColor="@color/yellow"
-        android:layout_below="@+id/chevelDeFriseSpinner"
-        android:layout_toRightOf="@+id/moatText"
-        android:layout_toEndOf="@+id/moatText" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textColor="@color/yellow"
+            android:textColorHint="@color/yellow"
+            android:ems="10"
+            android:id="@+id/commentsText"
+            android:layout_below="@id/lowBarSpinner"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:hint="Additional comments" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ramparts (Metal ramps):"
-        android:textColor="@color/yellow"
-        android:layout_marginTop="2dp"
-        android:id="@+id/rampartsText"
-        android:layout_below="@+id/moatSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rampartsSpinner"
-        android:spinnerMode="dropdown"
-        android:textColor="@color/yellow"
-        android:layout_below="@+id/moatSpinner"
-        android:layout_toRightOf="@+id/rampartsText"
-        android:layout_toEndOf="@+id/rampartsText" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Drawbridge:"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/yellow"
-        android:id="@+id/drawbridgeText"
-        android:layout_below="@+id/rampartsSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/drawbridgeSpinner"
-        android:textColor="@color/yellow"
-        android:spinnerMode="dropdown"
-        android:layout_below="@+id/rampartsSpinner"
-        android:layout_toRightOf="@+id/drawbridgeText"
-        android:layout_toEndOf="@+id/drawbridgeText" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sally Port:"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/yellow"
-        android:id="@+id/sallyPortText"
-        android:layout_below="@+id/drawbridgeSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sallyPortSpinner"
-        android:spinnerMode="dropdown"
-        android:textColor="@color/yellow"
-        android:layout_below="@+id/drawbridgeSpinner"
-        android:layout_toRightOf="@+id/sallyPortText"
-        android:layout_toEndOf="@+id/sallyPortText" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rock Wall:"
-        android:layout_marginTop="2dp"
-        android:id="@+id/rockWallText"
-        android:textColor="@color/yellow"
-        android:layout_below="@+id/sallyPortSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/yellow"
-        android:id="@+id/rockWallSpinner"
-        android:spinnerMode="dropdown"
-        android:layout_below="@+id/sallyPortSpinner"
-        android:layout_toRightOf="@+id/rockWallText"
-        android:layout_toEndOf="@+id/rockWallText" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rough terrain:"
-        android:textColor="@color/yellow"
-        android:layout_marginTop="2dp"
-        android:id="@+id/roughTerrainText"
-        android:layout_below="@+id/rockWallSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/roughTerrainSpinner"
-        android:textColor="@color/yellow"
-        android:spinnerMode="dropdown"
-        android:layout_below="@+id/rockWallSpinner"
-        android:layout_toRightOf="@+id/roughTerrainText"
-        android:layout_toEndOf="@+id/roughTerrainText" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Low bar:"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/yellow"
-        android:id="@+id/lowBarText"
-        android:layout_below="@+id/roughTerrainSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/lowBarSpinner"
-        android:textColor="@color/yellow"
-        android:spinnerMode="dropdown"
-        android:layout_below="@+id/roughTerrainSpinner"
-        android:layout_toRightOf="@+id/lowBarText"
-        android:layout_toEndOf="@+id/lowBarText" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="RESET ONLY"
-        android:textColor="@color/blue"
-        android:id="@+id/resetButton"
-        android:layout_below="@+id/commentsText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SEND"
-        android:textColor="@color/blue"
-        android:id="@+id/sendButton"
-        android:layout_below="@+id/commentsText"
-        android:layout_toRightOf="@+id/teamNumber"
-        android:layout_toEndOf="@+id/teamNumber" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:textColor="@color/yellow"
-        android:textColorHint="@color/yellow"
-        android:ems="10"
-        android:id="@+id/commentsText"
-        android:layout_below="@id/lowBarSpinner"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:hint="Additional comments" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Version: "
-        android:textColor="@color/yellow"
-        android:id="@+id/versionText"
-        android:layout_below="@+id/resetButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Version: "
+            android:textColor="@color/yellow"
+            android:id="@+id/versionText"
+            android:layout_below="@+id/resetButton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    -->
 </RelativeLayout>
 </ScrollView>
