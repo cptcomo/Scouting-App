@@ -311,7 +311,6 @@ public class MainActivity extends AppCompatActivity {
                 editDefensesLayout.setVisibility(View.GONE);
 
                 for(RelativeLayout d : defensesLayouts){
-                    
                     d.setVisibility(View.GONE);
                 }
             }
