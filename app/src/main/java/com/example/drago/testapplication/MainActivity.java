@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +23,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -33,6 +36,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     //input element ids found from the live form page
     public static final String[] TEAM_NUMBER_KEY = {"entry_1577205917", "entry_1450594725"};
+    public static final String[] MATCH_NUMBER_KEY = {"", "entry_1966563731"};
     public static final String[] BREACHES_DEFENSES_IN_AUTONOMOUS_KEY = {"entry_1309176866", "entry_2004340847"};
     public static final String[] SCORE_IN_AUTONOMOUS_KEY = {"entry_365970572", "entry_1072905336"};
     public static final String[] SCORE_IN_HIGH_GOAL_KEY = {"entry_1686842457", "entry_1861626737"};
@@ -67,9 +73,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String[] ROCK_WALL_KEY = {"entry_559108952", "entry_613405738"};
     public static final String[] ROUGH_TERRAIN_KEY = {"entry_439784406", "entry_774349350"};
     public static final String[] LOW_BAR_KEY = {"entry_631241315", "entry_1940807735"};
+    public static final String[] COMMENTS_KEY = {"", "entry_1127654160"};
 
     private Context context;
     private ScrollView scrollView;
+    private EditText matchNumber;
     private EditText teamNumber;
     private CheckBox breachInAutoBox;
     private CheckBox scoresInAutoBox;
@@ -81,19 +89,47 @@ public class MainActivity extends AppCompatActivity {
     private EditText numberInLowGoalText;
     private CheckBox canHangBox;
     private CheckBox defendsBox;
-    private Spinner portcullisSpinner;
-    private Spinner chevelDeFriseSpinner;
-    private Spinner moatSpinner;
-    private Spinner rampartsSpinner;
-    private Spinner drawbridgeSpinner;
-    private Spinner sallyPortSpinner;
-    private Spinner rockWallSpinner;
-    private Spinner roughTerrainSpinner;
-    private Spinner lowBarSpinner;
+    private RelativeLayout defenseSelectionLayout;
+    private RadioGroup classAGroup;
+    private RadioButton portcullisButton;
+    private RadioButton chevalDeFriseButton;
+    private RadioGroup classBGroup;
+    private RadioButton rampartsButton;
+    private RadioButton moatButton;
+    private RadioGroup classCGroup;
+    private RadioButton sallyPortButton;
+    private RadioButton drawbridgeButton;
+    private RadioGroup classDGroup;
+    private RadioButton roughTerrainButton;
+    private RadioButton rockWallButton;
+    private RelativeLayout editDefensesLayout;
+    private Button doneSelectionButton;
+    private TextView defenseText;
+    private RelativeLayout portcullisLayout;
+    private CheckBox portcullisBreached;
+    private RelativeLayout chevalDeFriseLayout;
+    private CheckBox chevalDeFriseBreached;
+    private RelativeLayout moatLayout;
+    private CheckBox moatBreached;
+    private RelativeLayout rampartsLayout;
+    private CheckBox rampartsBreached;
+    private RelativeLayout drawbridgeLayout;
+    private CheckBox drawbridgeBreached;
+    private RelativeLayout sallyPortLayout;
+    private CheckBox sallyPortBreached;
+    private RelativeLayout rockwallLayout;
+    private CheckBox rockWallBreached;
+    private RelativeLayout roughTerrainLayout;
+    private CheckBox roughTerrainBreached;
+    private RelativeLayout lowBarLayout;
+    private CheckBox lowBarBreached;
+    private Button backToSelectionButton;
+    private EditText commentsText;
     private TextView versionText;
 
-    private final EditText[] editTexts = {numberInHighGoalText, numberInLowGoalText};
-    private Spinner[] defenses;
+    private CheckBox[] defensesBreached;
+    private RelativeLayout[] defensesLayouts;
+    private RelativeLayout[] selectedDefensesLayouts;
 
     private final String VERSION_NAME = BuildConfig.VERSION_NAME;
 
@@ -112,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         final Button sendButton = (Button)findViewById(R.id.sendButton);
         final Button resetButton = (Button)findViewById(R.id.resetButton);
         scrollView = (ScrollView)findViewById(R.id.scrollView1);
+        matchNumber = (EditText)findViewById(R.id.matchNumber);
         teamNumber = (EditText)findViewById(R.id.teamNumber);
         breachInAutoBox = (CheckBox)findViewById(R.id.breachInAutonomousText);
         scoresInAutoBox = (CheckBox)findViewById(R.id.scoresInAutonomousText);
@@ -123,18 +160,50 @@ public class MainActivity extends AppCompatActivity {
         numberInLowGoalText = (EditText)findViewById(R.id.numberScoredInLowGoal);
         canHangBox = (CheckBox)findViewById(R.id.canHangBox);
         defendsBox = (CheckBox)findViewById(R.id.defendsBox);
-        portcullisSpinner = (Spinner)findViewById(R.id.portcullisSpinner);
-        chevelDeFriseSpinner = (Spinner)findViewById(R.id.chevelDeFriseSpinner);
-        moatSpinner = (Spinner)findViewById(R.id.moatSpinner);
-        rampartsSpinner = (Spinner)findViewById(R.id.rampartsSpinner);
-        drawbridgeSpinner = (Spinner)findViewById(R.id.drawbridgeSpinner);
-        sallyPortSpinner = (Spinner)findViewById(R.id.sallyPortSpinner);
-        rockWallSpinner = (Spinner)findViewById(R.id.rockWallSpinner);
-        roughTerrainSpinner = (Spinner)findViewById(R.id.roughTerrainSpinner);
-        lowBarSpinner = (Spinner)findViewById(R.id.lowBarSpinner);
+        defenseSelectionLayout = (RelativeLayout)findViewById(R.id.defenseSelectionLayout);
+        defenseText = (TextView)findViewById(R.id.defensesText);
+        classAGroup = (RadioGroup)findViewById(R.id.classAGroup);
+        portcullisButton = (RadioButton)findViewById(R.id.portcullisButton);
+        chevalDeFriseButton = (RadioButton)findViewById(R.id.chevalDeFriseButton);
+        classBGroup = (RadioGroup)findViewById(R.id.classBGroup);
+        rampartsButton = (RadioButton)findViewById(R.id.rampartsButton);
+        moatButton = (RadioButton)findViewById(R.id.moatButton);
+        classCGroup = (RadioGroup)findViewById(R.id.classCGroup);
+        sallyPortButton = (RadioButton)findViewById(R.id.sallyPortButton);
+        drawbridgeButton = (RadioButton)findViewById(R.id.drawbridgeButton);
+        classDGroup = (RadioGroup)findViewById(R.id.classDGroup);
+        roughTerrainButton = (RadioButton)findViewById(R.id.roughTerrainButton);
+        rockWallButton = (RadioButton)findViewById(R.id.rockWallButton);
+        doneSelectionButton = (Button)findViewById(R.id.doneSelectionButton);
+        editDefensesLayout = (RelativeLayout)findViewById(R.id.editDefensesLayout);
+        portcullisLayout = (RelativeLayout)findViewById(R.id.portcullisLayout);
+        portcullisBreached = (CheckBox)findViewById(R.id.portcullisBreached);
+        chevalDeFriseLayout = (RelativeLayout)findViewById(R.id.chevalDeFriseLayout);
+        chevalDeFriseBreached = (CheckBox)findViewById(R.id.chevalDeFriseBreached);
+        moatLayout = (RelativeLayout)findViewById(R.id.moatLayout);
+        moatBreached = (CheckBox)findViewById(R.id.moatBreached);
+        rampartsLayout = (RelativeLayout)findViewById(R.id.rampartsLayout);
+        rampartsBreached = (CheckBox)findViewById(R.id.rampartsBreached);
+        drawbridgeLayout = (RelativeLayout)findViewById(R.id.drawbridgeLayout);
+        drawbridgeBreached = (CheckBox)findViewById(R.id.drawbridgeBreached);
+        sallyPortLayout = (RelativeLayout)findViewById(R.id.sallyPortLayout);
+        sallyPortBreached = (CheckBox)findViewById(R.id.sallyPortBreached);
+        rockwallLayout = (RelativeLayout)findViewById(R.id.rockWallLayout);
+        rockWallBreached = (CheckBox)findViewById(R.id.rockWallBreached);
+        roughTerrainLayout = (RelativeLayout)findViewById(R.id.roughTerrainLayout);
+        roughTerrainBreached = (CheckBox)findViewById(R.id.roughTerrainBreached);
+        lowBarLayout = (RelativeLayout)findViewById(R.id.lowBarLayout);
+        lowBarBreached = (CheckBox)findViewById(R.id.lowBarBreached);
+        commentsText = (EditText)findViewById(R.id.commentsText);
+        backToSelectionButton = (Button)findViewById(R.id.backToSelectionButton);
         versionText = (TextView)findViewById(R.id.versionText);
-        defenses = new Spinner[]{portcullisSpinner, chevelDeFriseSpinner, moatSpinner, rampartsSpinner,
-                drawbridgeSpinner, sallyPortSpinner, rockWallSpinner, roughTerrainSpinner};
+
+        defensesBreached = new CheckBox[]{portcullisBreached, chevalDeFriseBreached, moatBreached, rampartsBreached,
+                drawbridgeBreached, sallyPortBreached, rockWallBreached, roughTerrainBreached, lowBarBreached};
+
+        defensesLayouts = new RelativeLayout[]{portcullisLayout, chevalDeFriseLayout, moatLayout, rampartsLayout,
+                drawbridgeLayout, sallyPortLayout, rockwallLayout, roughTerrainLayout};
+
         versionText.setText("Version: " + VERSION_NAME);
 
         String[] scoreInAutoItems = new String[]{"Low", "High"};
@@ -142,49 +211,6 @@ public class MainActivity extends AppCompatActivity {
         scoreInAutoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         scoreInAutoSpinner.setAdapter(scoreInAutoAdapter);
 
-        final String[] lowbarItems = {"Didn't breach", "Breached"};
-        ArrayAdapter<String> lowbarAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lowbarItems);
-        lowbarAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        lowBarSpinner.setAdapter(lowbarAdapter);
-
-        final String[] defensesItems = new String[]{"Not on field", "Breached", "Didn't breach"};
-
-        for(Spinner defense : defenses) {
-            ArrayAdapter<String> defenseAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, defensesItems);
-            defenseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            defense.setAdapter(defenseAdapter);
-            defense.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    TextView t = (TextView) parent.getChildAt(0);
-                    if (t != null) {
-                        t.setTextColor(getResources().getColor(R.color.white));
-                    } else {
-                        displayText("t is null", Toast.LENGTH_LONG);
-                    }
-                    //((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-        }
-        lowBarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView t = (TextView)parent.getChildAt(0);
-                if(t != null){
-                    t.setTextColor(getResources().getColor(R.color.white));
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         //SCROLL VIEW HACK: fixes annoying bug where the screen scrolls to an EditText view after scrolling/pressing a button
         //BOGUS, but it works. DO NOT CHANGE or REMOVE.
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
@@ -197,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         sendButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -218,21 +245,19 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 displayText("Resetting all fields", Toast.LENGTH_LONG);
                 resetFields();
-                scrollView.scrollTo(0,0);
+                scrollView.scrollTo(0, 0);
             }
         });
         scoresInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(!isChecked) {
+                if (!isChecked) {
                     scoreInAutoSpinner.setSelection(0);
                     scoreInAutoSpinner.setVisibility(View.GONE);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) teleOpText.getLayoutParams();
-                    params.addRule(RelativeLayout.BELOW, R.id.scoresInAutonomousText);
+                    setChild(scoresInAutoBox, teleOpText);
                 } else {
                     scoreInAutoSpinner.setVisibility(View.VISIBLE);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) teleOpText.getLayoutParams();
-                    params.addRule(RelativeLayout.BELOW, R.id.scoreInAutonomusSpinner);
+                    setChild(scoreInAutoSpinner, teleOpText);
                 }
             }
         });
@@ -242,12 +267,10 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(!isChecked) {
                     numberInHighGoalText.setVisibility(View.GONE);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) scoreInLowGoalBox.getLayoutParams();
-                    params.addRule(RelativeLayout.BELOW, R.id.scoreInHighGoalBox);
+                    setChild(scoreInHighGoalBox, scoreInLowGoalBox);
                 } else {
                     numberInHighGoalText.setVisibility(View.VISIBLE);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) scoreInLowGoalBox.getLayoutParams();
-                    params.addRule(RelativeLayout.BELOW, R.id.numberScoredInHighGoal);
+                    setChild(numberInHighGoalText, scoreInLowGoalBox);
                 }
             }
         });
@@ -257,44 +280,114 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(!isChecked) {
                     numberInLowGoalText.setVisibility(View.GONE);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) canHangBox.getLayoutParams();
-                    params.addRule(RelativeLayout.BELOW, R.id.scoreInLowGoalBox);
+                    setChild(scoreInLowGoalBox, canHangBox);
                 } else {
                     numberInLowGoalText.setVisibility(View.VISIBLE);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) canHangBox.getLayoutParams();
-                    params.addRule(RelativeLayout.BELOW, R.id.numberScoredInLowGoal);
+                    setChild(numberInLowGoalText, canHangBox);
+                }
+            }
+        });
+
+        doneSelectionButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    long eventDuration = event.getEventTime() - event.getDownTime();
+                    if(eventDuration > longPressTimeout) {
+                        doneSelection(true);
+                        return false;
+                    } else {
+                        doneSelection(false);
+                        return false;
+                    }
+                }
+                return false;
+            }
+        });
+        backToSelectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                defenseSelectionLayout.setVisibility(View.VISIBLE);
+                editDefensesLayout.setVisibility(View.GONE);
+
+                for(RelativeLayout d : defensesLayouts){
+                    d.setVisibility(View.GONE);
                 }
             }
         });
     }
 
+    private void doneSelection(boolean forceChange){
+        selectedDefensesLayouts = new RelativeLayout[4];
+
+        if(portcullisButton.isChecked()){
+            selectedDefensesLayouts[0] = portcullisLayout;
+        } else if(chevalDeFriseButton.isChecked()){
+            selectedDefensesLayouts[0] = chevalDeFriseLayout;
+        } else {
+            if(!forceChange){
+                displayText("You must select a defense for Class A", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+        if(rampartsButton.isChecked()){
+            selectedDefensesLayouts[1] = rampartsLayout;
+        } else if(moatButton.isChecked()){
+            selectedDefensesLayouts[1] = moatLayout;
+        } else {
+            if(!forceChange){
+                displayText("You must select a defense for Class B", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+        if(sallyPortButton.isChecked()){
+            selectedDefensesLayouts[2] = sallyPortLayout;
+        } else if(drawbridgeButton.isChecked()){
+            selectedDefensesLayouts[2] = drawbridgeLayout;
+        } else {
+            if(!forceChange){
+                displayText("You must select a defense for Class C", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+        if(roughTerrainButton.isChecked()){
+            selectedDefensesLayouts[3] = roughTerrainLayout;
+        } else if(rockWallButton.isChecked()){
+            selectedDefensesLayouts[3] = rockwallLayout;
+        } else {
+            if(!forceChange){
+                displayText("You must select a defense for Class D", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+        for(RelativeLayout d : selectedDefensesLayouts){
+            if(d != null){
+                d.setVisibility(View.VISIBLE);
+            }
+        }
+        defenseSelectionLayout.setVisibility(View.GONE);
+        editDefensesLayout.setVisibility(View.VISIBLE);
+    }
     private void send(boolean forceSend){
         //Make sure all the fields are filled with values
-        if (TextUtils.isEmpty(teamNumber.getText().toString())) {
+        if(TextUtils.isEmpty(teamNumber.getText().toString())){
             displayText("Please enter a team number", Toast.LENGTH_LONG);
             return;
         }
 
-        if (scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")) {
+        if(scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")){
             displayText("You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG);
             return;
         }
 
-        if (scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")) {
+        if(scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")){
             displayText("You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG);
             return;
         }
 
         if(!forceSend){
-            int numberOfNotOnFieldCount = 0;
-            for (Spinner defense : defenses) {
-                if (defense.getSelectedItem().toString().equals("Not on field")) {
-                    numberOfNotOnFieldCount++;
-                }
-            }
-            if (numberOfNotOnFieldCount > 5) {
-                int missingDefenses = numberOfNotOnFieldCount - 5;
-                displayText("You didn't enter data for " + missingDefenses + " " + (missingDefenses == 1 ? "defense" : "defenses"), Toast.LENGTH_LONG);
+            if(TextUtils.isEmpty(matchNumber.getText().toString())){
+                displayText("Please enter in the qualification match number", Toast.LENGTH_LONG);
                 return;
             }
         }
@@ -302,11 +395,10 @@ public class MainActivity extends AppCompatActivity {
         PostDataTask postDataTask = new PostDataTask();
 
         HashMap<String, String> defensesValue = new HashMap<String, String>();
-        defensesValue.put("Not on field", "0");
         defensesValue.put("Breached", "1");
         defensesValue.put("Didn't breach", "-1");
 
-        outputs = new String[16];
+        outputs = new String[18];
         outputs[0] = teamNumber.getText().toString();
         outputs[1] = breachInAutoBox.isChecked() ? "1" : "-1";
         outputs[2] = scoresInAutoBox.isChecked() ? (scoreInAutoSpinner.getSelectedItem().toString() == "Low" ? "1" : "2") : "-1";
@@ -314,22 +406,24 @@ public class MainActivity extends AppCompatActivity {
         outputs[4] = scoreInLowGoalBox.isChecked() ? String.valueOf(numberInLowGoalText.getText()) : "0";
         outputs[5] = canHangBox.isChecked() ? "1" : "-1";
         outputs[6] = defendsBox.isChecked() ? "1" : "-1";
-        outputs[7] = defensesValue.get(portcullisSpinner.getSelectedItem().toString());
-        outputs[8] = defensesValue.get(chevelDeFriseSpinner.getSelectedItem().toString());
-        outputs[9] = defensesValue.get(moatSpinner.getSelectedItem().toString());
-        outputs[10] = defensesValue.get(rampartsSpinner.getSelectedItem().toString());
-        outputs[11] = defensesValue.get(drawbridgeSpinner.getSelectedItem().toString());
-        outputs[12] = defensesValue.get(sallyPortSpinner.getSelectedItem().toString());
-        outputs[13] = defensesValue.get(rockWallSpinner.getSelectedItem().toString());
-        outputs[14] = defensesValue.get(roughTerrainSpinner.getSelectedItem().toString());
-        outputs[15] = lowBarSpinner.getSelectedItem().toString() == "Breached" ? "1" : "-1";
+        outputs[7] = portcullisButton.isChecked() ? (portcullisBreached.isChecked() ? "1" : "-1") : "0";
+        outputs[8] = chevalDeFriseButton.isChecked() ? (chevalDeFriseBreached.isChecked() ? "1" : "-1") : "0";
+        outputs[9] = moatButton.isChecked() ? (moatBreached.isChecked() ? "1" : "-1") : "0";
+        outputs[10] = rampartsButton.isChecked() ? (rampartsBreached.isChecked() ? "1" : "-1") : "0";
+        outputs[11] = drawbridgeButton.isChecked() ? (drawbridgeBreached.isChecked() ? "1" : "-1") : "0";
+        outputs[12] = sallyPortButton.isChecked() ? (sallyPortBreached.isChecked() ? "1" : "-1") : "0";
+        outputs[13] = rockWallButton.isChecked() ? (rockWallBreached.isChecked() ? "1" : "-1") : "0";
+        outputs[14] = roughTerrainButton.isChecked() ? (roughTerrainBreached.isChecked() ? "1" : "-1") : "0";
+        outputs[15] = (lowBarBreached.isChecked() ? "1" : "-1");
+        outputs[16] = matchNumber.getText().toString();
+        outputs[17] = commentsText.getText().toString();
 
         boolean connectedToInternet = isInternetConnected(context);
         boolean wroteToFile = false;
-        if (connectedToInternet) {
+        if(connectedToInternet) {
             postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
                     outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
-                    outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15]
+                    outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17]
             );
         } else {
             wroteToFile = writeToFile();
@@ -339,7 +433,11 @@ public class MainActivity extends AppCompatActivity {
             scrollView.scrollTo(0, 0);
         }
     }
-    private void resetFields() {
+    private void setChild(View above, View below){
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) below.getLayoutParams();
+        params.addRule(RelativeLayout.BELOW, above.getId());
+    }
+    private void resetFields(){
         teamNumber.setText("");
         breachInAutoBox.setChecked(false);
         scoresInAutoBox.setChecked(false);
@@ -350,20 +448,30 @@ public class MainActivity extends AppCompatActivity {
         numberInLowGoalText.setText("");
         canHangBox.setChecked(false);
         defendsBox.setChecked(false);
-        for (Spinner defense : defenses) {
-            defense.setSelection(0);
+        classAGroup.clearCheck();
+        classBGroup.clearCheck();
+        classCGroup.clearCheck();
+        classDGroup.clearCheck();
+        for(CheckBox defenseBreached : defensesBreached){
+            defenseBreached.setChecked(false);
         }
-        lowBarSpinner.setSelection(0);
+        matchNumber.setText("");
+        commentsText.setText("");
+        editDefensesLayout.setVisibility(View.GONE);
+        defenseSelectionLayout.setVisibility(View.VISIBLE);
+        for(RelativeLayout d : defensesLayouts){
+            d.setVisibility(View.GONE);
+        }
     }
-    private boolean writeToFile() {
-        if(isExternalStorageWritable()) {
+    private boolean writeToFile(){
+        if(isExternalStorageWritable()){
             File fileDirectory = new File(Environment.getExternalStorageDirectory() + "/Documents");
             boolean isPresent = true;
-            if(!fileDirectory.exists()) {
+            if(!fileDirectory.exists()){
                 isPresent = fileDirectory.mkdir();
             }
             File file;
-            if(isPresent) {
+            if(isPresent){
                 file = new File(fileDirectory.getAbsolutePath(), "Stronghold Scouting App Data.txt");
             } else {
                 displayText("Error: unable to create file", Toast.LENGTH_LONG);
@@ -395,12 +503,12 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean isExternalStorageWritable() {
+    private boolean isExternalStorageWritable(){
         /* Checks if external storage is available for read and write */
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
-    private boolean isInternetConnected(Context context) {
+    private boolean isInternetConnected(Context context){
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -415,8 +523,8 @@ public class MainActivity extends AppCompatActivity {
         toast.show();
     }
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_MENU ) {
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_MENU){
             // do nothing
             return true;
         }
@@ -426,11 +534,10 @@ public class MainActivity extends AppCompatActivity {
     //AsyncTask to send data as a http POST request
     private class PostDataTask extends AsyncTask<String, Void, Boolean> {
         @Override
-        protected Boolean doInBackground(String... contactData) {
+        protected Boolean doInBackground(String... contactData){
             Boolean result = true;
             String url = contactData[0];
             String postBody = "";
-
             try {
                 //all values must be URL encoded to make sure that special characters like & | ",etc.
                 //do not cause problems
@@ -449,13 +556,13 @@ public class MainActivity extends AppCompatActivity {
                         "&" + SALLY_PORT_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[13],"UTF-8") +
                         "&" + ROCK_WALL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[14],"UTF-8") +
                         "&" + ROUGH_TERRAIN_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[15],"UTF-8") +
-                        "&" + LOW_BAR_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[16],"UTF-8")
-                ;
-            } catch (UnsupportedEncodingException ex) {
+                        "&" + LOW_BAR_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[16],"UTF-8") +
+                        "&" + MATCH_NUMBER_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[17],"UTF-8") +
+                        "&" + COMMENTS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[18],"UTF-8");
+            } catch (UnsupportedEncodingException ex){
                 result = false;
             }
-
-            try{
+            try {
                 //Create OkHttpClient for sending request
                 OkHttpClient client = new OkHttpClient();
                 //Create the request body with the help of Media Type
@@ -474,7 +581,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result){
-            //Print Success or failure message accordingly
             displayText(result ? "Data successfully sent!" : "There was some error in sending Data. Please try again after some time.", Toast.LENGTH_LONG);
         }
     }
