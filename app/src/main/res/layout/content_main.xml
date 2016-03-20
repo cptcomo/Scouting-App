@@ -262,7 +262,7 @@
                 android:textColor="@color/yellow"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:id="@+id/classBText"
+                android:id="@+id/classCText"
                 />
             <RadioButton
                 android:id="@+id/sallyPortButton"
@@ -292,7 +292,7 @@
                 android:textColor="@color/yellow"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:id="@+id/classBText"
+                android:id="@+id/classDText"
                 />
             <RadioButton
                 android:id="@+id/roughTerrainButton"
