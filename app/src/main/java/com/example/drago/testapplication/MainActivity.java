@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         scoresInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(!isChecked) {
+                if (!isChecked) {
                     scoreInAutoSpinner.setSelection(0);
                     scoreInAutoSpinner.setVisibility(View.GONE);
                     setChild(scoresInAutoBox, teleOpText);
@@ -288,48 +288,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        doneSelectionButton.setOnClickListener(new View.OnClickListener() {
+        doneSelectionButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                selectedDefensesLayouts = new RelativeLayout[4];
-
-                if(portcullisButton.isChecked()){
-                    selectedDefensesLayouts[0] = portcullisLayout;
-                } else if(chevalDeFriseButton.isChecked()){
-                    selectedDefensesLayouts[0] = chevalDeFriseLayout;
-                } else {
-                    displayText("You must select a defense for Class A", Toast.LENGTH_LONG);
-                    return;
+            public boolean onTouch(View view, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    long eventDuration = event.getEventTime() - event.getDownTime();
+                    if(eventDuration > longPressTimeout) {
+                        doneSelection(true);
+                        return false;
+                    } else {
+                        doneSelection(false);
+                        return false;
+                    }
                 }
-                if(rampartsButton.isChecked()){
-                    selectedDefensesLayouts[1] = rampartsLayout;
-                } else if(moatButton.isChecked()){
-                    selectedDefensesLayouts[1] = moatLayout;
-                } else {
-                    displayText("You must select a defense for Class B", Toast.LENGTH_LONG);
-                    return;
-                }
-                if(sallyPortButton.isChecked()){
-                    selectedDefensesLayouts[2] = sallyPortLayout;
-                } else if(drawbridgeButton.isChecked()){
-                    selectedDefensesLayouts[2] = drawbridgeLayout;
-                } else {
-                    displayText("You must select a defense for Class C", Toast.LENGTH_LONG);
-                    return;
-                }
-                if(roughTerrainButton.isChecked()){
-                    selectedDefensesLayouts[3] = roughTerrainLayout;
-                } else if(rockWallButton.isChecked()){
-                    selectedDefensesLayouts[3] = rockwallLayout;
-                } else {
-                    displayText("You must select a defense for Class D", Toast.LENGTH_LONG);
-                    return;
-                }
-                for(RelativeLayout d : selectedDefensesLayouts){
-                    d.setVisibility(View.VISIBLE);
-                }
-                defenseSelectionLayout.setVisibility(View.GONE);
-                editDefensesLayout.setVisibility(View.VISIBLE);
+                return false;
             }
         });
         backToSelectionButton.setOnClickListener(new View.OnClickListener() {
@@ -339,10 +311,63 @@ public class MainActivity extends AppCompatActivity {
                 editDefensesLayout.setVisibility(View.GONE);
 
                 for(RelativeLayout d : defensesLayouts){
+                    
                     d.setVisibility(View.GONE);
                 }
             }
         });
+    }
+
+    private void doneSelection(boolean forceChange){
+        selectedDefensesLayouts = new RelativeLayout[4];
+
+        if(portcullisButton.isChecked()){
+            selectedDefensesLayouts[0] = portcullisLayout;
+        } else if(chevalDeFriseButton.isChecked()){
+            selectedDefensesLayouts[0] = chevalDeFriseLayout;
+        } else {
+            if(!forceChange){
+                displayText("You must select a defense for Class A", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+        if(rampartsButton.isChecked()){
+            selectedDefensesLayouts[1] = rampartsLayout;
+        } else if(moatButton.isChecked()){
+            selectedDefensesLayouts[1] = moatLayout;
+        } else {
+            if(!forceChange){
+                displayText("You must select a defense for Class B", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+        if(sallyPortButton.isChecked()){
+            selectedDefensesLayouts[2] = sallyPortLayout;
+        } else if(drawbridgeButton.isChecked()){
+            selectedDefensesLayouts[2] = drawbridgeLayout;
+        } else {
+            if(!forceChange){
+                displayText("You must select a defense for Class C", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+        if(roughTerrainButton.isChecked()){
+            selectedDefensesLayouts[3] = roughTerrainLayout;
+        } else if(rockWallButton.isChecked()){
+            selectedDefensesLayouts[3] = rockwallLayout;
+        } else {
+            if(!forceChange){
+                displayText("You must select a defense for Class D", Toast.LENGTH_LONG);
+                return;
+            }
+        }
+        for(RelativeLayout d : selectedDefensesLayouts){
+            if(d != null){
+                d.setVisibility(View.VISIBLE);
+            }
+        }
+        defenseSelectionLayout.setVisibility(View.GONE);
+        editDefensesLayout.setVisibility(View.VISIBLE);
     }
     private void send(boolean forceSend){
         //Make sure all the fields are filled with values
