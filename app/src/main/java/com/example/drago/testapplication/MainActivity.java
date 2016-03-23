@@ -136,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
     private String[] outputs;
     
     private long longPressTimeout = 1000;
+
+    public static boolean sentSuccessfully = true;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -394,10 +396,6 @@ public class MainActivity extends AppCompatActivity {
         //Create an object for PostDataTask AsyncTask
         PostDataTask postDataTask = new PostDataTask();
 
-        HashMap<String, String> defensesValue = new HashMap<String, String>();
-        defensesValue.put("Breached", "1");
-        defensesValue.put("Didn't breach", "-1");
-
         outputs = new String[18];
         outputs[0] = teamNumber.getText().toString();
         outputs[1] = breachInAutoBox.isChecked() ? "1" : "-1";
@@ -425,13 +423,17 @@ public class MainActivity extends AppCompatActivity {
                     outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
                     outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17]
             );
+            if(!sentSuccessfully){
+                wroteToFile = writeToFile();
+            }
         } else {
             wroteToFile = writeToFile();
         }
-        if (connectedToInternet || wroteToFile) {
+        if(connectedToInternet || wroteToFile) {
             resetFields();
             scrollView.scrollTo(0, 0);
         }
+        sentSuccessfully = true;
     }
     private void setChild(View above, View below){
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) below.getLayoutParams();
@@ -462,6 +464,7 @@ public class MainActivity extends AppCompatActivity {
         for(RelativeLayout d : defensesLayouts){
             d.setVisibility(View.GONE);
         }
+        sentSuccessfully = true;
     }
     private boolean writeToFile(){
         if(isExternalStorageWritable()){
@@ -484,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
                     outputs[6] + " " + outputs[7] + " " + outputs[8] + " " +
                     outputs[9] + " " + outputs[10] + " " + outputs[11] + " " +
                     outputs[12] + " " + outputs[13] + " " + outputs[14] + " " +
-                    outputs[15] + "\n";
+                    outputs[15] + " " + outputs[16] + " " + outputs[17] + "\n";
             try {
                 out = new FileOutputStream(file, true);
                 out.write(output.getBytes());
@@ -575,6 +578,9 @@ public class MainActivity extends AppCompatActivity {
                 Response response = client.newCall(request).execute();
             }catch (IOException exception){
                 result = false;
+            }
+            if(!result){
+                MainActivity.sentSuccessfully = false;
             }
             return result;
         }
