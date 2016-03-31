@@ -4,20 +4,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -30,25 +26,18 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AsyncResponse {
     public static final MediaType FORM_DATA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
 
     private final String oldURL = "https://docs.google.com/forms/d/1U7hJDI5br8rYoKiXTo5J0Kh3n9xztI07dDNLO9gIhCY/formResponse";
@@ -154,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
     
     private long longPressTimeout = 1000;
 
-    public static boolean sentSuccessfully = true;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -290,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 displayText("Resetting all fields", Toast.LENGTH_LONG);
                 resetFields();
-                scrollView.scrollTo(0, 0);
             }
         });
         breachInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -519,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //Create an object for PostDataTask AsyncTask
-        PostDataTask postDataTask = new PostDataTask();
+        PostDataTask postDataTask = new PostDataTask(this);
 
         outputs = new String[21];
         outputs[0] = teamNumber.getText().toString();
@@ -546,24 +533,11 @@ public class MainActivity extends AppCompatActivity {
         outputs[19] = Integer.toString(lowGoalAttemptSpinner.getSelectedItemPosition());
         outputs[20] = breachInAutoBox.isChecked() ? Integer.toString(defenseBreachedInAutoSpinner.getSelectedItemPosition()) : "-1";
 
-        boolean connectedToInternet = isInternetConnected(context);
-        boolean wroteToFile = false;
-        if(connectedToInternet) {
-            postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
-                    outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
-                    outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17], outputs[18],
-                    outputs[19], outputs[20]
-            );
-            if(!sentSuccessfully){
-                wroteToFile = writeToFile();
-            }
-        } else {
-            wroteToFile = writeToFile();
-        }
-        if(connectedToInternet || wroteToFile) {
-            resetFields();
-            scrollView.scrollTo(0, 0);
-        }
+        postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
+                outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
+                outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17], outputs[18],
+                outputs[19], outputs[20]
+        );
     }
     private void setChild(View above, View below){
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) below.getLayoutParams();
@@ -599,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
         for(RelativeLayout d : defensesLayouts){
             d.setVisibility(View.GONE);
         }
-        sentSuccessfully = true;
+        scrollView.scrollTo(0,0);
     }
     private boolean writeToFile(){
         if(isExternalStorageWritable()){
@@ -642,17 +616,25 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void processFinish(boolean result){
+        if(result){
+            displayText("Data successfully sent!", Toast.LENGTH_LONG);
+            resetFields();
+        }
+        else {
+            if(writeToFile()){
+                resetFields();
+            }
+            else {
+                displayText("Both sending data and writing to a file failed. Please try again later", Toast.LENGTH_LONG);
+            }
+        }
+    }
+
     private boolean isExternalStorageWritable(){
         /* Checks if external storage is available for read and write */
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
-
-    private boolean isInternetConnected(Context context){
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
     private void displayText(String text, int duration){
         Toast toast = Toast.makeText(context, text, duration);
         toast.setGravity(Gravity.TOP, 0, 10);
@@ -672,6 +654,11 @@ public class MainActivity extends AppCompatActivity {
 
     //AsyncTask to send data as a http POST request
     private class PostDataTask extends AsyncTask<String, Void, Boolean> {
+        public AsyncResponse delegate;
+        public PostDataTask(AsyncResponse a){
+            this.delegate = a;
+        }
+
         @Override
         protected Boolean doInBackground(String... contactData){
             Boolean result = true;
@@ -700,15 +687,12 @@ public class MainActivity extends AppCompatActivity {
                         "&" + COMMENTS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[18],"UTF-8") +
                         "&" + ATTEMPT_IN_HIGH_GOAL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[19],"UTF-8") +
                         "&" + ATTEMPT_IN_LOW_GOAL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[20],"UTF-8") +
-                        "&" + DEFENSE_BREACHED_IN_AUTONOMOUS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[21],"UTF-8")
-                ;
+                        "&" + DEFENSE_BREACHED_IN_AUTONOMOUS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[21],"UTF-8");
             } catch (UnsupportedEncodingException ex){
                 result = false;
             }
             try {
-                //Create OkHttpClient for sending request
                 OkHttpClient client = new OkHttpClient();
-                //Create the request body with the help of Media Type
                 RequestBody body = RequestBody.create(FORM_DATA_TYPE, postBody);
                 Request request = new Request.Builder()
                         .url(url)
@@ -719,15 +703,11 @@ public class MainActivity extends AppCompatActivity {
             }catch (IOException exception){
                 result = false;
             }
-            if(!result){
-                MainActivity.sentSuccessfully = false;
-            }
             return result;
         }
-
         @Override
         protected void onPostExecute(Boolean result){
-            displayText(result ? "Data successfully sent!" : "There was some error in sending Data. Please try again after some time.", Toast.LENGTH_LONG);
+            delegate.processFinish(result);
         }
     }
 }
