@@ -251,11 +251,11 @@ public class MainActivity extends AppCompatActivity {
         String[] goalItems = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         ArrayAdapter<String>goalAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, goalItems);
         scoreInAutoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         highGoalAttemptSpinner.setAdapter(goalAdapter);
         highGoalScoreSpinner.setAdapter(goalAdapter);
         lowGoalAttemptSpinner.setAdapter(goalAdapter);
         lowGoalScoreSpinner.setAdapter(goalAdapter);
+
         //SCROLL VIEW HACK: fixes annoying bug where the screen scrolls to an EditText view after scrolling/pressing a button
         //BOGUS, but it works. DO NOT CHANGE or REMOVE.
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
@@ -408,7 +408,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });*/
-
         doneSelectionButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -495,7 +494,14 @@ public class MainActivity extends AppCompatActivity {
             displayText("Please enter a team number", Toast.LENGTH_LONG);
             return;
         }
-
+        if(highGoalScoreSpinner.getSelectedItemPosition() > highGoalAttemptSpinner.getSelectedItemPosition()){
+            displayText("Robot can't score more high goals than it attempted", Toast.LENGTH_LONG);
+            return;
+        }
+        if(lowGoalScoreSpinner.getSelectedItemPosition() > lowGoalAttemptSpinner.getSelectedItemPosition()){
+            displayText("Robot can't score more low goals than it attempted", Toast.LENGTH_LONG);
+            return;
+        }
         /*
         if(scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")){
             displayText("You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG);
@@ -506,7 +512,6 @@ public class MainActivity extends AppCompatActivity {
             displayText("You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG);
             return;
         }*/
-
         if(!forceSend){
             if(TextUtils.isEmpty(matchNumber.getText().toString())){
                 displayText("Please enter in the qualification match number", Toast.LENGTH_LONG);
@@ -559,7 +564,6 @@ public class MainActivity extends AppCompatActivity {
             resetFields();
             scrollView.scrollTo(0, 0);
         }
-        sentSuccessfully = true;
     }
     private void setChild(View above, View below){
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) below.getLayoutParams();
@@ -613,13 +617,13 @@ public class MainActivity extends AppCompatActivity {
             }
             FileOutputStream out;
             String output = "";
-            output += outputs[0] + " " + outputs[1] + " " + outputs[2] + " " +
+            output += outputs[17] + " !@#$%^& " + outputs[0] + " " + outputs[1] + " " + outputs[2] + " " +
                     outputs[3] + " " + outputs[4] + " " + outputs[5] + " " +
                     outputs[6] + " " + outputs[7] + " " + outputs[8] + " " +
                     outputs[9] + " " + outputs[10] + " " + outputs[11] + " " +
                     outputs[12] + " " + outputs[13] + " " + outputs[14] + " " +
-                    outputs[15] + " " + outputs[16] + " " + outputs[17] + " " +
-                    outputs[18] + " " + outputs[19] + " " + outputs[20] + "\n";
+                    outputs[15] + " " + outputs[16] + " " + outputs[18] + " " +
+                    outputs[19] + " " + outputs[20] + "\n";
             try {
                 out = new FileOutputStream(file, true);
                 out.write(output.getBytes());
