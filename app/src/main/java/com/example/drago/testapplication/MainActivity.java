@@ -4,20 +4,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -30,24 +26,18 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AsyncResponse {
     public static final MediaType FORM_DATA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
 
     private final String oldURL = "https://docs.google.com/forms/d/1U7hJDI5br8rYoKiXTo5J0Kh3n9xztI07dDNLO9gIhCY/formResponse";
@@ -59,8 +49,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String[] TEAM_NUMBER_KEY = {"entry_1577205917", "entry_1450594725"};
     public static final String[] MATCH_NUMBER_KEY = {"", "entry_1966563731"};
     public static final String[] BREACHES_DEFENSES_IN_AUTONOMOUS_KEY = {"entry_1309176866", "entry_2004340847"};
+    public static final String[] DEFENSE_BREACHED_IN_AUTONOMOUS_KEY = {"", "entry_655027564"};
     public static final String[] SCORE_IN_AUTONOMOUS_KEY = {"entry_365970572", "entry_1072905336"};
+    public static final String[] ATTEMPT_IN_HIGH_GOAL_KEY = {"", "entry_257301727"};
     public static final String[] SCORE_IN_HIGH_GOAL_KEY = {"entry_1686842457", "entry_1861626737"};
+    public static final String[] ATTEMPT_IN_LOW_GOAL_KEY = {"", "entry_1592979112"};
     public static final String[] SCORE_IN_LOW_GOAL_KEY = {"entry_801197027", "entry_2040967630"};
     public static final String[] ROBOT_HANGS_KEY = {"entry_1539080045", "entry_1637215245"};
     public static final String[] ROBOT_DEFENDS_KEY = {"entry_1748393174", "entry_1325768637"};
@@ -80,13 +73,26 @@ public class MainActivity extends AppCompatActivity {
     private EditText matchNumber;
     private EditText teamNumber;
     private CheckBox breachInAutoBox;
+    private Spinner defenseBreachedInAutoSpinner;
     private CheckBox scoresInAutoBox;
     private Spinner scoreInAutoSpinner;
     private TextView teleOpText;
-    private CheckBox scoreInHighGoalBox;
-    private EditText numberInHighGoalText;
-    private CheckBox scoreInLowGoalBox;
-    private EditText numberInLowGoalText;
+    //private CheckBox scoreInHighGoalBox;
+    //private EditText numberInHighGoalText;
+    //private CheckBox scoreInLowGoalBox;
+    //private EditText numberInLowGoalText;
+    private Button decHighGoalAttempt;
+    private Spinner highGoalAttemptSpinner;
+    private Button incHighGoalAttempt;
+    private Button decHighGoalScore;
+    private Spinner highGoalScoreSpinner;
+    private Button incHighGoalScore;
+    private Button decLowGoalAttempt;
+    private Spinner lowGoalAttemptSpinner;
+    private Button incLowGoalAttempt;
+    private Button decLowGoalScore;
+    private Spinner lowGoalScoreSpinner;
+    private Button incLowGoalScore;
     private CheckBox canHangBox;
     private CheckBox defendsBox;
     private RelativeLayout defenseSelectionLayout;
@@ -137,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
     
     private long longPressTimeout = 1000;
 
-    public static boolean sentSuccessfully = true;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -153,13 +158,26 @@ public class MainActivity extends AppCompatActivity {
         matchNumber = (EditText)findViewById(R.id.matchNumber);
         teamNumber = (EditText)findViewById(R.id.teamNumber);
         breachInAutoBox = (CheckBox)findViewById(R.id.breachInAutonomousText);
+        defenseBreachedInAutoSpinner = (Spinner)findViewById(R.id.defenseBreachInAutoSpinner);
         scoresInAutoBox = (CheckBox)findViewById(R.id.scoresInAutonomousText);
         scoreInAutoSpinner = (Spinner)findViewById(R.id.scoreInAutonomusSpinner);
         teleOpText = (TextView)findViewById(R.id.teleOpText);
-        scoreInHighGoalBox = (CheckBox)findViewById(R.id.scoreInHighGoalBox);
-        numberInHighGoalText = (EditText)findViewById(R.id.numberScoredInHighGoal);
-        scoreInLowGoalBox = (CheckBox)findViewById(R.id.scoreInLowGoalBox);
-        numberInLowGoalText = (EditText)findViewById(R.id.numberScoredInLowGoal);
+        //scoreInHighGoalBox = (CheckBox)findViewById(R.id.scoreInHighGoalBox);
+        //numberInHighGoalText = (EditText)findViewById(R.id.numberScoredInHighGoal);
+        //scoreInLowGoalBox = (CheckBox)findViewById(R.id.scoreInLowGoalBox);
+        //numberInLowGoalText = (EditText)findViewById(R.id.numberScoredInLowGoal);
+        decHighGoalAttempt = (Button)findViewById(R.id.decHighGoalAttemptButton);
+        highGoalAttemptSpinner = (Spinner)findViewById(R.id.attemptHighGoalSpinner);
+        incHighGoalAttempt = (Button)findViewById(R.id.incAttemptHighGoalButton);
+        decHighGoalScore = (Button)findViewById(R.id.decHighGoalScoreButton);
+        highGoalScoreSpinner = (Spinner)findViewById(R.id.highGoalScoreSpinner);
+        incHighGoalScore = (Button)findViewById(R.id.incHighGoalScoreButton);
+        decLowGoalAttempt = (Button)findViewById(R.id.decLowGoalAttemptButton);
+        lowGoalAttemptSpinner = (Spinner)findViewById(R.id.lowGoalAttemptSpinner);
+        incLowGoalAttempt = (Button)findViewById(R.id.incLowGoalAttemptButton);
+        decLowGoalScore = (Button)findViewById(R.id.decLowGoalScoreButton);
+        lowGoalScoreSpinner = (Spinner)findViewById(R.id.lowGoalScoreSpinner);
+        incLowGoalScore = (Button)findViewById(R.id.incLowGoalScoreButton);
         canHangBox = (CheckBox)findViewById(R.id.canHangBox);
         defendsBox = (CheckBox)findViewById(R.id.defendsBox);
         defenseSelectionLayout = (RelativeLayout)findViewById(R.id.defenseSelectionLayout);
@@ -213,6 +231,19 @@ public class MainActivity extends AppCompatActivity {
         scoreInAutoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         scoreInAutoSpinner.setAdapter(scoreInAutoAdapter);
 
+        String[] defensesItems = new String[]{"Low Bar", "Portcullis", "Cheval De Frise", "Ramparts", "Moat", "Sally Port", "Drawbridge", "Rough Terrain", "Rock Wall"};
+        ArrayAdapter<String>defensesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, defensesItems);
+        defensesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        defenseBreachedInAutoSpinner.setAdapter(defensesAdapter);
+
+        String[] goalItems = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        ArrayAdapter<String>goalAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, goalItems);
+        scoreInAutoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        highGoalAttemptSpinner.setAdapter(goalAdapter);
+        highGoalScoreSpinner.setAdapter(goalAdapter);
+        lowGoalAttemptSpinner.setAdapter(goalAdapter);
+        lowGoalScoreSpinner.setAdapter(goalAdapter);
+
         //SCROLL VIEW HACK: fixes annoying bug where the screen scrolls to an EditText view after scrolling/pressing a button
         //BOGUS, but it works. DO NOT CHANGE or REMOVE.
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
@@ -247,23 +278,98 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 displayText("Resetting all fields", Toast.LENGTH_LONG);
                 resetFields();
-                scrollView.scrollTo(0, 0);
+            }
+        });
+        breachInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+                if(!isChecked){
+                    defenseBreachedInAutoSpinner.setSelection(0);
+                    defenseBreachedInAutoSpinner.setVisibility(View.GONE);
+                }
+                else {
+                    defenseBreachedInAutoSpinner.setVisibility(View.VISIBLE);
+                }
             }
         });
         scoresInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
+                if(!isChecked) {
                     scoreInAutoSpinner.setSelection(0);
                     scoreInAutoSpinner.setVisibility(View.GONE);
-                    setChild(scoresInAutoBox, teleOpText);
+                    //setChild(scoresInAutoBox, teleOpText);
                 } else {
                     scoreInAutoSpinner.setVisibility(View.VISIBLE);
-                    setChild(scoreInAutoSpinner, teleOpText);
+                    //setChild(scoreInAutoSpinner, teleOpText);
                 }
             }
         });
-
+        decLowGoalAttempt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lowGoalAttemptSpinner.getSelectedItemPosition() > 0) {
+                    lowGoalAttemptSpinner.setSelection(lowGoalAttemptSpinner.getSelectedItemPosition() - 1);
+                }
+            }
+        });
+        decLowGoalScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(lowGoalScoreSpinner.getSelectedItemPosition() > 0){
+                    lowGoalScoreSpinner.setSelection(lowGoalScoreSpinner.getSelectedItemPosition() - 1);
+                }
+            }
+        });
+        decHighGoalAttempt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(highGoalAttemptSpinner.getSelectedItemPosition() > 0){
+                    highGoalAttemptSpinner.setSelection(highGoalAttemptSpinner.getSelectedItemPosition() - 1);
+                }
+            }
+        });
+        decHighGoalScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(highGoalScoreSpinner.getSelectedItemPosition() > 0){
+                    highGoalScoreSpinner.setSelection(highGoalScoreSpinner.getSelectedItemPosition() - 1);
+                }
+            }
+        });
+        incLowGoalAttempt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(lowGoalAttemptSpinner.getSelectedItemPosition() < lowGoalAttemptSpinner.getCount() - 1){
+                    lowGoalAttemptSpinner.setSelection(lowGoalAttemptSpinner.getSelectedItemPosition() + 1);
+                }
+            }
+        });
+        incLowGoalScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(lowGoalScoreSpinner.getSelectedItemPosition() < lowGoalScoreSpinner.getCount() - 1){
+                    lowGoalScoreSpinner.setSelection(lowGoalScoreSpinner.getSelectedItemPosition() + 1);
+                }
+            }
+        });
+        incHighGoalAttempt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(highGoalAttemptSpinner.getSelectedItemPosition() < highGoalAttemptSpinner.getCount() - 1){
+                    highGoalAttemptSpinner.setSelection(highGoalAttemptSpinner.getSelectedItemPosition() + 1);
+                }
+            }
+        });
+        incHighGoalScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(highGoalScoreSpinner.getSelectedItemPosition() < highGoalScoreSpinner.getCount() - 1){
+                    highGoalScoreSpinner.setSelection(highGoalScoreSpinner.getSelectedItemPosition() + 1);
+                }
+            }
+        });
+        /*
         scoreInHighGoalBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -288,8 +394,7 @@ public class MainActivity extends AppCompatActivity {
                     setChild(numberInLowGoalText, canHangBox);
                 }
             }
-        });
-
+        });*/
         doneSelectionButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -376,7 +481,15 @@ public class MainActivity extends AppCompatActivity {
             displayText("Please enter a team number", Toast.LENGTH_LONG);
             return;
         }
-
+        if(highGoalScoreSpinner.getSelectedItemPosition() > highGoalAttemptSpinner.getSelectedItemPosition()){
+            displayText("Robot can't score more high goals than it attempted", Toast.LENGTH_LONG);
+            return;
+        }
+        if(lowGoalScoreSpinner.getSelectedItemPosition() > lowGoalAttemptSpinner.getSelectedItemPosition()){
+            displayText("Robot can't score more low goals than it attempted", Toast.LENGTH_LONG);
+            return;
+        }
+        /*
         if(scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")){
             displayText("You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG);
             return;
@@ -385,8 +498,7 @@ public class MainActivity extends AppCompatActivity {
         if(scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")){
             displayText("You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG);
             return;
-        }
-
+        }*/
         if(!forceSend){
             if(TextUtils.isEmpty(matchNumber.getText().toString())){
                 displayText("Please enter in the qualification match number", Toast.LENGTH_LONG);
@@ -394,14 +506,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //Create an object for PostDataTask AsyncTask
-        PostDataTask postDataTask = new PostDataTask();
+        PostDataTask postDataTask = new PostDataTask(this);
 
-        outputs = new String[18];
+        outputs = new String[21];
         outputs[0] = teamNumber.getText().toString();
         outputs[1] = breachInAutoBox.isChecked() ? "1" : "-1";
         outputs[2] = scoresInAutoBox.isChecked() ? (scoreInAutoSpinner.getSelectedItem().toString() == "Low" ? "1" : "2") : "-1";
-        outputs[3] = scoreInHighGoalBox.isChecked() ? (String.valueOf(numberInHighGoalText.getText())) : "0";
-        outputs[4] = scoreInLowGoalBox.isChecked() ? String.valueOf(numberInLowGoalText.getText()) : "0";
+        outputs[3] = Integer.toString(highGoalScoreSpinner.getSelectedItemPosition());
+        outputs[4] = Integer.toString(lowGoalScoreSpinner.getSelectedItemPosition());
+        //outputs[3] = scoreInHighGoalBox.isChecked() ? (String.valueOf(numberInHighGoalText.getText())) : "0";
+        //outputs[4] = scoreInLowGoalBox.isChecked() ? String.valueOf(numberInLowGoalText.getText()) : "0";
         outputs[5] = canHangBox.isChecked() ? "1" : "-1";
         outputs[6] = defendsBox.isChecked() ? "1" : "-1";
         outputs[7] = portcullisButton.isChecked() ? (portcullisBreached.isChecked() ? "1" : "-1") : "0";
@@ -415,25 +529,15 @@ public class MainActivity extends AppCompatActivity {
         outputs[15] = (lowBarBreached.isChecked() ? "1" : "-1");
         outputs[16] = matchNumber.getText().toString();
         outputs[17] = commentsText.getText().toString();
+        outputs[18] = Integer.toString(highGoalAttemptSpinner.getSelectedItemPosition());
+        outputs[19] = Integer.toString(lowGoalAttemptSpinner.getSelectedItemPosition());
+        outputs[20] = breachInAutoBox.isChecked() ? Integer.toString(defenseBreachedInAutoSpinner.getSelectedItemPosition()) : "-1";
 
-        boolean connectedToInternet = isInternetConnected(context);
-        boolean wroteToFile = false;
-        if(connectedToInternet) {
-            postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
-                    outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
-                    outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17]
-            );
-            if(!sentSuccessfully){
-                wroteToFile = writeToFile();
-            }
-        } else {
-            wroteToFile = writeToFile();
-        }
-        if(connectedToInternet || wroteToFile) {
-            resetFields();
-            scrollView.scrollTo(0, 0);
-        }
-        sentSuccessfully = true;
+        postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
+                outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
+                outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17], outputs[18],
+                outputs[19], outputs[20]
+        );
     }
     private void setChild(View above, View below){
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) below.getLayoutParams();
@@ -442,12 +546,17 @@ public class MainActivity extends AppCompatActivity {
     private void resetFields(){
         teamNumber.setText("");
         breachInAutoBox.setChecked(false);
+        defenseBreachedInAutoSpinner.setSelection(0);
         scoresInAutoBox.setChecked(false);
         scoreInAutoSpinner.setSelection(0);
-        scoreInHighGoalBox.setChecked(false);
-        numberInHighGoalText.setText("");
-        scoreInLowGoalBox.setChecked(false);
-        numberInLowGoalText.setText("");
+        highGoalAttemptSpinner.setSelection(0);
+        highGoalScoreSpinner.setSelection(0);
+        lowGoalAttemptSpinner.setSelection(0);
+        lowGoalScoreSpinner.setSelection(0);
+        //scoreInHighGoalBox.setChecked(false);
+        //numberInHighGoalText.setText("");
+        //scoreInLowGoalBox.setChecked(false);
+        //numberInLowGoalText.setText("");
         canHangBox.setChecked(false);
         defendsBox.setChecked(false);
         classAGroup.clearCheck();
@@ -464,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
         for(RelativeLayout d : defensesLayouts){
             d.setVisibility(View.GONE);
         }
-        sentSuccessfully = true;
+        scrollView.scrollTo(0,0);
     }
     private boolean writeToFile(){
         if(isExternalStorageWritable()){
@@ -482,12 +591,13 @@ public class MainActivity extends AppCompatActivity {
             }
             FileOutputStream out;
             String output = "";
-            output += outputs[0] + " " + outputs[1] + " " + outputs[2] + " " +
+            output += outputs[17] + " !@#$%^& " + outputs[0] + " " + outputs[1] + " " + outputs[2] + " " +
                     outputs[3] + " " + outputs[4] + " " + outputs[5] + " " +
                     outputs[6] + " " + outputs[7] + " " + outputs[8] + " " +
                     outputs[9] + " " + outputs[10] + " " + outputs[11] + " " +
                     outputs[12] + " " + outputs[13] + " " + outputs[14] + " " +
-                    outputs[15] + " " + outputs[16] + " " + outputs[17] + "\n";
+                    outputs[15] + " " + outputs[16] + " " + outputs[18] + " " +
+                    outputs[19] + " " + outputs[20] + "\n";
             try {
                 out = new FileOutputStream(file, true);
                 out.write(output.getBytes());
@@ -506,17 +616,25 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void processFinish(boolean result){
+        if(result){
+            displayText("Data successfully sent!", Toast.LENGTH_LONG);
+            resetFields();
+        }
+        else {
+            if(writeToFile()){
+                resetFields();
+            }
+            else {
+                displayText("Both sending data and writing to a file failed. Please try again later", Toast.LENGTH_LONG);
+            }
+        }
+    }
+
     private boolean isExternalStorageWritable(){
         /* Checks if external storage is available for read and write */
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
-
-    private boolean isInternetConnected(Context context){
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
     private void displayText(String text, int duration){
         Toast toast = Toast.makeText(context, text, duration);
         toast.setGravity(Gravity.TOP, 0, 10);
@@ -536,6 +654,11 @@ public class MainActivity extends AppCompatActivity {
 
     //AsyncTask to send data as a http POST request
     private class PostDataTask extends AsyncTask<String, Void, Boolean> {
+        public AsyncResponse delegate;
+        public PostDataTask(AsyncResponse a){
+            this.delegate = a;
+        }
+
         @Override
         protected Boolean doInBackground(String... contactData){
             Boolean result = true;
@@ -561,14 +684,15 @@ public class MainActivity extends AppCompatActivity {
                         "&" + ROUGH_TERRAIN_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[15],"UTF-8") +
                         "&" + LOW_BAR_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[16],"UTF-8") +
                         "&" + MATCH_NUMBER_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[17],"UTF-8") +
-                        "&" + COMMENTS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[18],"UTF-8");
+                        "&" + COMMENTS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[18],"UTF-8") +
+                        "&" + ATTEMPT_IN_HIGH_GOAL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[19],"UTF-8") +
+                        "&" + ATTEMPT_IN_LOW_GOAL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[20],"UTF-8") +
+                        "&" + DEFENSE_BREACHED_IN_AUTONOMOUS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[21],"UTF-8");
             } catch (UnsupportedEncodingException ex){
                 result = false;
             }
             try {
-                //Create OkHttpClient for sending request
                 OkHttpClient client = new OkHttpClient();
-                //Create the request body with the help of Media Type
                 RequestBody body = RequestBody.create(FORM_DATA_TYPE, postBody);
                 Request request = new Request.Builder()
                         .url(url)
@@ -579,15 +703,11 @@ public class MainActivity extends AppCompatActivity {
             }catch (IOException exception){
                 result = false;
             }
-            if(!result){
-                MainActivity.sentSuccessfully = false;
-            }
             return result;
         }
-
         @Override
         protected void onPostExecute(Boolean result){
-            displayText(result ? "Data successfully sent!" : "There was some error in sending Data. Please try again after some time.", Toast.LENGTH_LONG);
+            delegate.processFinish(result);
         }
     }
 }
