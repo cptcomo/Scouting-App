@@ -46,17 +46,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private int currentSpreadsheet = 1;
 
     //input element ids found from the live form page
+    public static final String[] NAME_KEY = {"", "entry_425409985"};
     public static final String[] TEAM_NUMBER_KEY = {"entry_1577205917", "entry_1450594725"};
     public static final String[] MATCH_NUMBER_KEY = {"", "entry_1966563731"};
     public static final String[] BREACHES_DEFENSES_IN_AUTONOMOUS_KEY = {"entry_1309176866", "entry_2004340847"};
     public static final String[] DEFENSE_BREACHED_IN_AUTONOMOUS_KEY = {"", "entry_655027564"};
     public static final String[] SCORE_IN_AUTONOMOUS_KEY = {"entry_365970572", "entry_1072905336"};
-    public static final String[] ATTEMPT_IN_HIGH_GOAL_KEY = {"", "entry_257301727"};
+    public static final String[] MISS_IN_HIGH_GOAL_KEY = {"", "entry_257301727"};
     public static final String[] SCORE_IN_HIGH_GOAL_KEY = {"entry_1686842457", "entry_1861626737"};
-    public static final String[] ATTEMPT_IN_LOW_GOAL_KEY = {"", "entry_1592979112"};
+    public static final String[] MISS_IN_LOW_GOAL_KEY = {"", "entry_1592979112"};
     public static final String[] SCORE_IN_LOW_GOAL_KEY = {"entry_801197027", "entry_2040967630"};
     public static final String[] ROBOT_HANGS_KEY = {"entry_1539080045", "entry_1637215245"};
     public static final String[] ROBOT_DEFENDS_KEY = {"entry_1748393174", "entry_1325768637"};
+    public static final String[] ROBOT_DEFENDED_AGAINST_KEY = {"", "entry_446274271"};
     public static final String[] PORTCULLIS_KEY = {"entry_1464581347", "entry_1443136194"};
     public static final String[] CHEVAL_DE_FRISE_KEY = {"entry_1394768057", "entry_2145332144"};
     public static final String[] MOAT_KEY = {"entry_1370432337", "entry_405176034"};
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     private Context context;
     private ScrollView scrollView;
+    private EditText nameField;
     private EditText matchNumber;
     private EditText teamNumber;
     private CheckBox breachInAutoBox;
@@ -77,24 +80,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private CheckBox scoresInAutoBox;
     private Spinner scoreInAutoSpinner;
     private TextView teleOpText;
-    //private CheckBox scoreInHighGoalBox;
-    //private EditText numberInHighGoalText;
-    //private CheckBox scoreInLowGoalBox;
-    //private EditText numberInLowGoalText;
-    private Button decHighGoalAttempt;
-    private Spinner highGoalAttemptSpinner;
-    private Button incHighGoalAttempt;
     private Button decHighGoalScore;
     private Spinner highGoalScoreSpinner;
     private Button incHighGoalScore;
-    private Button decLowGoalAttempt;
-    private Spinner lowGoalAttemptSpinner;
-    private Button incLowGoalAttempt;
+    private Button decHighGoalsMissed;
+    private Spinner highGoalsMissedSpinner;
+    private Button incHighGoalsMissed;
     private Button decLowGoalScore;
     private Spinner lowGoalScoreSpinner;
     private Button incLowGoalScore;
+    private Button decLowGoalsMissed;
+    private Spinner lowGoalsMissedSpinner;
+    private Button incLowGoalsMissed;
     private CheckBox canHangBox;
     private CheckBox defendsBox;
+    private CheckBox wasDefendedAgainstBox;
     private RelativeLayout defenseSelectionLayout;
     private RadioGroup classAGroup;
     private RadioButton portcullisButton;
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         final Button sendButton = (Button)findViewById(R.id.sendButton);
         final Button resetButton = (Button)findViewById(R.id.resetButton);
         scrollView = (ScrollView)findViewById(R.id.scrollView1);
+        nameField = (EditText)findViewById(R.id.nameField);
         matchNumber = (EditText)findViewById(R.id.matchNumber);
         teamNumber = (EditText)findViewById(R.id.teamNumber);
         breachInAutoBox = (CheckBox)findViewById(R.id.breachInAutonomousText);
@@ -166,20 +167,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         //numberInHighGoalText = (EditText)findViewById(R.id.numberScoredInHighGoal);
         //scoreInLowGoalBox = (CheckBox)findViewById(R.id.scoreInLowGoalBox);
         //numberInLowGoalText = (EditText)findViewById(R.id.numberScoredInLowGoal);
-        decHighGoalAttempt = (Button)findViewById(R.id.decHighGoalAttemptButton);
-        highGoalAttemptSpinner = (Spinner)findViewById(R.id.attemptHighGoalSpinner);
-        incHighGoalAttempt = (Button)findViewById(R.id.incAttemptHighGoalButton);
         decHighGoalScore = (Button)findViewById(R.id.decHighGoalScoreButton);
         highGoalScoreSpinner = (Spinner)findViewById(R.id.highGoalScoreSpinner);
         incHighGoalScore = (Button)findViewById(R.id.incHighGoalScoreButton);
-        decLowGoalAttempt = (Button)findViewById(R.id.decLowGoalAttemptButton);
-        lowGoalAttemptSpinner = (Spinner)findViewById(R.id.lowGoalAttemptSpinner);
-        incLowGoalAttempt = (Button)findViewById(R.id.incLowGoalAttemptButton);
+        decHighGoalsMissed = (Button)findViewById(R.id.decHighGoalsMissedButton);
+        highGoalsMissedSpinner = (Spinner)findViewById(R.id.highGoalsMissedSpinner);
+        incHighGoalsMissed = (Button)findViewById(R.id.incHighGoalsMissedButton);
         decLowGoalScore = (Button)findViewById(R.id.decLowGoalScoreButton);
         lowGoalScoreSpinner = (Spinner)findViewById(R.id.lowGoalScoreSpinner);
         incLowGoalScore = (Button)findViewById(R.id.incLowGoalScoreButton);
+        decLowGoalsMissed = (Button)findViewById(R.id.decLowGoalsMissedButton);
+        lowGoalsMissedSpinner = (Spinner)findViewById(R.id.lowGoalsMissedSpinner);
+        incLowGoalsMissed = (Button)findViewById(R.id.incLowGoalsMissedButton);
         canHangBox = (CheckBox)findViewById(R.id.canHangBox);
         defendsBox = (CheckBox)findViewById(R.id.defendsBox);
+        wasDefendedAgainstBox = (CheckBox)findViewById(R.id.defendedAgainstBox);
         defenseSelectionLayout = (RelativeLayout)findViewById(R.id.defenseSelectionLayout);
         defenseText = (TextView)findViewById(R.id.defensesText);
         classAGroup = (RadioGroup)findViewById(R.id.classAGroup);
@@ -239,9 +241,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         String[] goalItems = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         ArrayAdapter<String>goalAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, goalItems);
         scoreInAutoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        highGoalAttemptSpinner.setAdapter(goalAdapter);
+        highGoalsMissedSpinner.setAdapter(goalAdapter);
         highGoalScoreSpinner.setAdapter(goalAdapter);
-        lowGoalAttemptSpinner.setAdapter(goalAdapter);
+        lowGoalsMissedSpinner.setAdapter(goalAdapter);
         lowGoalScoreSpinner.setAdapter(goalAdapter);
 
         //SCROLL VIEW HACK: fixes annoying bug where the screen scrolls to an EditText view after scrolling/pressing a button
@@ -282,12 +284,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         });
         breachInAutoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
-                if(!isChecked){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
                     defenseBreachedInAutoSpinner.setSelection(0);
                     defenseBreachedInAutoSpinner.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     defenseBreachedInAutoSpinner.setVisibility(View.VISIBLE);
                 }
             }
@@ -303,27 +304,27 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 }
             }
         });
-        decLowGoalAttempt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lowGoalAttemptSpinner.getSelectedItemPosition() > 0) {
-                    lowGoalAttemptSpinner.setSelection(lowGoalAttemptSpinner.getSelectedItemPosition() - 1);
-                }
-            }
-        });
         decLowGoalScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(lowGoalScoreSpinner.getSelectedItemPosition() > 0){
+                if (lowGoalScoreSpinner.getSelectedItemPosition() > 0) {
                     lowGoalScoreSpinner.setSelection(lowGoalScoreSpinner.getSelectedItemPosition() - 1);
                 }
             }
         });
-        decHighGoalAttempt.setOnClickListener(new View.OnClickListener() {
+        decLowGoalsMissed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(highGoalAttemptSpinner.getSelectedItemPosition() > 0){
-                    highGoalAttemptSpinner.setSelection(highGoalAttemptSpinner.getSelectedItemPosition() - 1);
+                if (lowGoalsMissedSpinner.getSelectedItemPosition() > 0) {
+                    lowGoalsMissedSpinner.setSelection(lowGoalsMissedSpinner.getSelectedItemPosition() - 1);
+                }
+            }
+        });
+        decHighGoalsMissed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(highGoalsMissedSpinner.getSelectedItemPosition() > 0){
+                    highGoalsMissedSpinner.setSelection(highGoalsMissedSpinner.getSelectedItemPosition() - 1);
                 }
             }
         });
@@ -335,11 +336,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 }
             }
         });
-        incLowGoalAttempt.setOnClickListener(new View.OnClickListener() {
+        incLowGoalsMissed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(lowGoalAttemptSpinner.getSelectedItemPosition() < lowGoalAttemptSpinner.getCount() - 1){
-                    lowGoalAttemptSpinner.setSelection(lowGoalAttemptSpinner.getSelectedItemPosition() + 1);
+                if(lowGoalsMissedSpinner.getSelectedItemPosition() < lowGoalsMissedSpinner.getCount() - 1){
+                    lowGoalsMissedSpinner.setSelection(lowGoalsMissedSpinner.getSelectedItemPosition() + 1);
                 }
             }
         });
@@ -351,11 +352,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 }
             }
         });
-        incHighGoalAttempt.setOnClickListener(new View.OnClickListener() {
+        incHighGoalsMissed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(highGoalAttemptSpinner.getSelectedItemPosition() < highGoalAttemptSpinner.getCount() - 1){
-                    highGoalAttemptSpinner.setSelection(highGoalAttemptSpinner.getSelectedItemPosition() + 1);
+                if(highGoalsMissedSpinner.getSelectedItemPosition() < highGoalsMissedSpinner.getCount() - 1){
+                    highGoalsMissedSpinner.setSelection(highGoalsMissedSpinner.getSelectedItemPosition() + 1);
                 }
             }
         });
@@ -453,14 +454,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             displayText("Please enter a team number", Toast.LENGTH_LONG);
             return;
         }
-        if(highGoalScoreSpinner.getSelectedItemPosition() > highGoalAttemptSpinner.getSelectedItemPosition()){
-            displayText("Robot can't score more high goals than it attempted", Toast.LENGTH_LONG);
-            return;
-        }
-        if(lowGoalScoreSpinner.getSelectedItemPosition() > lowGoalAttemptSpinner.getSelectedItemPosition()){
-            displayText("Robot can't score more low goals than it attempted", Toast.LENGTH_LONG);
-            return;
-        }
         /*
         if(scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")){
             displayText("You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG);
@@ -480,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         //Create an object for PostDataTask AsyncTask
         PostDataTask postDataTask = new PostDataTask(this);
 
-        outputs = new String[21];
+        outputs = new String[23];
         outputs[0] = teamNumber.getText().toString();
         outputs[1] = breachInAutoBox.isChecked() ? "1" : "-1";
         outputs[2] = scoresInAutoBox.isChecked() ? (scoreInAutoSpinner.getSelectedItem().toString() == "Low" ? "1" : "2") : "-1";
@@ -501,25 +494,28 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         outputs[15] = (lowBarBreached.isChecked() ? "1" : "-1");
         outputs[16] = matchNumber.getText().toString();
         outputs[17] = commentsText.getText().toString();
-        outputs[18] = Integer.toString(highGoalAttemptSpinner.getSelectedItemPosition());
-        outputs[19] = Integer.toString(lowGoalAttemptSpinner.getSelectedItemPosition());
+        outputs[18] = Integer.toString(highGoalsMissedSpinner.getSelectedItemPosition());
+        outputs[19] = Integer.toString(lowGoalsMissedSpinner.getSelectedItemPosition());
         outputs[20] = breachInAutoBox.isChecked() ? Integer.toString(defenseBreachedInAutoSpinner.getSelectedItemPosition()) : "-1";
+        outputs[21] = nameField.getText().toString();
+        outputs[22] = wasDefendedAgainstBox.isChecked() ? "1" : "-1";
 
         postDataTask.execute(spreadsheetURLs[currentSpreadsheet],
                 outputs[0], outputs[1], outputs[2], outputs[3], outputs[4], outputs[5], outputs[6], outputs[7], outputs[8],
                 outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17], outputs[18],
-                outputs[19], outputs[20]
+                outputs[19], outputs[20], outputs[21], outputs[22]
         );
     }
     private void resetFields(){
+        nameField.setText("");
         teamNumber.setText("");
         breachInAutoBox.setChecked(false);
         defenseBreachedInAutoSpinner.setSelection(0);
         scoresInAutoBox.setChecked(false);
         scoreInAutoSpinner.setSelection(0);
-        highGoalAttemptSpinner.setSelection(0);
+        highGoalsMissedSpinner.setSelection(0);
         highGoalScoreSpinner.setSelection(0);
-        lowGoalAttemptSpinner.setSelection(0);
+        lowGoalsMissedSpinner.setSelection(0);
         lowGoalScoreSpinner.setSelection(0);
         //scoreInHighGoalBox.setChecked(false);
         //numberInHighGoalText.setText("");
@@ -527,6 +523,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         //numberInLowGoalText.setText("");
         canHangBox.setChecked(false);
         defendsBox.setChecked(false);
+        wasDefendedAgainstBox.setChecked(false);
         classAGroup.clearCheck();
         classBGroup.clearCheck();
         classCGroup.clearCheck();
@@ -653,9 +650,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                         "&" + LOW_BAR_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[16],"UTF-8") +
                         "&" + MATCH_NUMBER_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[17],"UTF-8") +
                         "&" + COMMENTS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[18],"UTF-8") +
-                        "&" + ATTEMPT_IN_HIGH_GOAL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[19],"UTF-8") +
-                        "&" + ATTEMPT_IN_LOW_GOAL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[20],"UTF-8") +
-                        "&" + DEFENSE_BREACHED_IN_AUTONOMOUS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[21],"UTF-8");
+                        "&" + MISS_IN_HIGH_GOAL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[19],"UTF-8") +
+                        "&" + MISS_IN_LOW_GOAL_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[20],"UTF-8") +
+                        "&" + DEFENSE_BREACHED_IN_AUTONOMOUS_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[21],"UTF-8") +
+                        "&" + NAME_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[22],"UTF-8") +
+                        "&" + ROBOT_DEFENDED_AGAINST_KEY[currentSpreadsheet] + "=" + URLEncoder.encode(contactData[23],"UTF-8");
             } catch (UnsupportedEncodingException ex){
                 result = false;
             }
