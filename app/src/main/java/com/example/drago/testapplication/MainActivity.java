@@ -143,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     
     private long longPressTimeout = 1000;
 
+    private boolean canSend = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -449,27 +451,20 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         editDefensesLayout.setVisibility(View.VISIBLE);
     }
     private void send(boolean forceSend){
+        if(!canSend) return;
         //Make sure all the fields are filled with values
         if(TextUtils.isEmpty(teamNumber.getText().toString())){
             displayText("Please enter a team number", Toast.LENGTH_LONG);
             return;
         }
-        /*
-        if(scoreInHighGoalBox.isChecked() && numberInHighGoalText.getText().toString().equals("")){
-            displayText("You checked that the robot can score in the high goal, but you didn't say not how many", Toast.LENGTH_LONG);
-            return;
-        }
-
-        if(scoreInLowGoalBox.isChecked() && numberInLowGoalText.getText().toString().equals("")){
-            displayText("You checked that the robot can score in the low goal, but you didn't say how many", Toast.LENGTH_LONG);
-            return;
-        }*/
         if(!forceSend){
             if(TextUtils.isEmpty(matchNumber.getText().toString())){
                 displayText("Please enter in the qualification match number", Toast.LENGTH_LONG);
                 return;
             }
         }
+
+        canSend = false;
         //Create an object for PostDataTask AsyncTask
         PostDataTask postDataTask = new PostDataTask(this);
 
@@ -594,6 +589,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 displayText("Both sending data and writing to a file failed. Please try again later", Toast.LENGTH_LONG);
             }
         }
+        canSend = true;
     }
 
     private boolean isExternalStorageWritable(){
