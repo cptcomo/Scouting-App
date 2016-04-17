@@ -298,10 +298,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 if(!isChecked) {
                     scoreInAutoSpinner.setSelection(0);
                     scoreInAutoSpinner.setVisibility(View.GONE);
-                    //setChild(scoresInAutoBox, teleOpText);
                 } else {
                     scoreInAutoSpinner.setVisibility(View.VISIBLE);
-                    //setChild(scoreInAutoSpinner, teleOpText);
                 }
             }
         });
@@ -369,32 +367,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 }
             }
         });
-        /*
-        scoreInHighGoalBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(!isChecked) {
-                    numberInHighGoalText.setVisibility(View.GONE);
-                    setChild(scoreInHighGoalBox, scoreInLowGoalBox);
-                } else {
-                    numberInHighGoalText.setVisibility(View.VISIBLE);
-                    setChild(numberInHighGoalText, scoreInLowGoalBox);
-                }
-            }
-        });
-
-        scoreInLowGoalBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(!isChecked) {
-                    numberInLowGoalText.setVisibility(View.GONE);
-                    setChild(scoreInLowGoalBox, canHangBox);
-                } else {
-                    numberInLowGoalText.setVisibility(View.VISIBLE);
-                    setChild(numberInLowGoalText, canHangBox);
-                }
-            }
-        });*/
         doneSelectionButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -538,10 +510,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 outputs[9], outputs[10], outputs[11], outputs[12], outputs[13], outputs[14], outputs[15], outputs[16], outputs[17], outputs[18],
                 outputs[19], outputs[20]
         );
-    }
-    private void setChild(View above, View below){
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) below.getLayoutParams();
-        params.addRule(RelativeLayout.BELOW, above.getId());
     }
     private void resetFields(){
         teamNumber.setText("");

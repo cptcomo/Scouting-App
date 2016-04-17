@@ -352,11 +352,21 @@
         android:layout_alignParentStart="true"
         android:checked="false" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robot was defended against"
+        android:id="@+id/defendedAgainstBox"
+        android:textColor="@color/yellow"
+        android:layout_below="@id/defendsBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/defenseSelectionLayout"
         android:layout_height="match_parent"
-        android:layout_below="@+id/defendsBox">
+        android:layout_below="@+id/defendedAgainstBox">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
