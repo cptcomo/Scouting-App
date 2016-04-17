@@ -562,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     outputs[9] + " " + outputs[10] + " " + outputs[11] + " " +
                     outputs[12] + " " + outputs[13] + " " + outputs[14] + " " +
                     outputs[15] + " " + outputs[16] + " " + outputs[18] + " " +
-                    outputs[19] + " " + outputs[20] + "\n";
+                    outputs[19] + " " + outputs[20] + " " + outputs[21] + " " + outputs[22] + "\n";
             try {
                 out = new FileOutputStream(file, true);
                 out.write(output.getBytes());
