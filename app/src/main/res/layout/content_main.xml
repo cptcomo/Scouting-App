@@ -22,11 +22,24 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:inputType="text"
+        android:textColor="@color/yellow"
+        android:textColorHint="@color/yellow"
+        android:ems="10"
+        android:id="@+id/nameField"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:hint="Name or Initials" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:inputType="numberSigned"
         android:textColor="@color/yellow"
         android:textColorHint="@color/yellow"
         android:ems="10"
         android:id="@+id/matchNumber"
+        android:layout_below="@id/nameField"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:hint="Match Number" />
@@ -127,48 +140,6 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_below="@id/teleOpText"
-        android:id="@+id/highGoalAttemptLayout">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="High goal attempts: "
-            android:textColor="@color/yellow"
-            android:layout_marginTop="13dp"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:id="@+id/highGoalAttemptText"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-        <Button
-            android:layout_width="32dp"
-            android:layout_height="match_parent"
-            android:layout_toEndOf="@id/highGoalAttemptText"
-            android:layout_toRightOf="@id/highGoalAttemptText"
-            android:id="@+id/decHighGoalAttemptButton"
-            android:text="-"/>
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:layout_marginTop="3dp"
-            android:id="@+id/attemptHighGoalSpinner"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/decHighGoalAttemptButton"
-            android:layout_toEndOf="@id/decHighGoalAttemptButton" />
-        <Button
-            android:layout_width="32dp"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/attemptHighGoalSpinner"
-            android:layout_toEndOf="@id/attemptHighGoalSpinner"
-            android:id="@+id/incAttemptHighGoalButton"
-            android:text="+"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_below="@id/highGoalAttemptLayout"
         android:id="@+id/highGoalScoreLayout">
         <TextView
             android:layout_width="wrap_content"
@@ -211,48 +182,48 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_below="@id/highGoalScoreLayout"
-        android:id="@+id/lowGoalAttemptLayout">
+        android:id="@+id/highGoalsMissedLayout">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Low goal attempts: "
+            android:text="High goals missed: "
             android:textColor="@color/yellow"
             android:layout_marginTop="13dp"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:id="@+id/lowGoalAttemptText"
+            android:id="@+id/highGoalsMissedText"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
         <Button
             android:layout_width="32dp"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@id/lowGoalAttemptText"
-            android:layout_toRightOf="@id/lowGoalAttemptText"
-            android:id="@+id/decLowGoalAttemptButton"
+            android:layout_toEndOf="@id/highGoalsMissedText"
+            android:layout_toRightOf="@id/highGoalsMissedText"
+            android:id="@+id/decHighGoalsMissedButton"
             android:text="-"/>
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="42dp"
             android:layout_marginTop="3dp"
-            android:id="@+id/lowGoalAttemptSpinner"
+            android:id="@+id/highGoalsMissedSpinner"
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/decLowGoalAttemptButton"
-            android:layout_toEndOf="@id/decLowGoalAttemptButton" />
+            android:layout_toRightOf="@id/decHighGoalsMissedButton"
+            android:layout_toEndOf="@id/decHighGoalsMissedButton" />
         <Button
             android:layout_width="32dp"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@id/lowGoalAttemptSpinner"
-            android:layout_toEndOf="@id/lowGoalAttemptSpinner"
-            android:id="@+id/incLowGoalAttemptButton"
+            android:layout_toRightOf="@id/highGoalsMissedSpinner"
+            android:layout_toEndOf="@id/highGoalsMissedSpinner"
+            android:id="@+id/incHighGoalsMissedButton"
             android:text="+"/>
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_below="@id/lowGoalAttemptLayout"
+        android:layout_below="@id/highGoalsMissedLayout"
         android:id="@+id/lowGoalScoreLayout">
         <TextView
             android:layout_width="wrap_content"
@@ -290,53 +261,56 @@
             android:id="@+id/incLowGoalScoreButton"
             android:text="+"/>
     </RelativeLayout>
-    <!--
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberSigned"
-        android:textColor="@color/yellow"
-        android:textColorHint="@color/yellow"
-        android:ems="10"
-        android:id="@+id/numberScoredInHighGoal"
-        android:hint="@string/HowManyText"
-        android:layout_below="@+id/lowGoalScoreLayout"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@id/lowGoalScoreLayout"
+        android:id="@+id/lowGoalsMissedLayout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Low goals missed: "
+            android:textColor="@color/yellow"
+            android:layout_marginTop="13dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:id="@+id/lowGoalsMissedText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+        <Button
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/lowGoalsMissedText"
+            android:layout_toRightOf="@id/lowGoalsMissedText"
+            android:id="@+id/decLowGoalsMissedButton"
+            android:text="-"/>
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_marginTop="3dp"
+            android:id="@+id/lowGoalsMissedSpinner"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/decLowGoalsMissedButton"
+            android:layout_toEndOf="@id/decLowGoalsMissedButton" />
+        <Button
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/lowGoalsMissedSpinner"
+            android:layout_toEndOf="@id/lowGoalsMissedSpinner"
+            android:id="@+id/incLowGoalsMissedButton"
+            android:text="+"/>
+    </RelativeLayout>
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Robot scores in low goal"
-        android:id="@+id/scoreInLowGoalBox"
         android:textColor="@color/yellow"
-        android:layout_below="@+id/scoreInHighGoalBox"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:checked="false" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberSigned"
-        android:ems="10"
-        android:id="@+id/numberScoredInLowGoal"
-        android:textColor="@color/yellow"
-        android:textColorHint="@color/yellow"
-        android:layout_below="@+id/scoreInLowGoalBox"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:hint="@string/HowManyText"
-        android:visibility="gone"/> -->
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/yellow"
-        android:text="Robot can hang"
+        android:text="Robot hangs"
         android:id="@+id/canHangBox"
-        android:layout_below="@+id/lowGoalScoreLayout"
+        android:layout_below="@+id/lowGoalsMissedLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:checked="false" />
@@ -352,11 +326,21 @@
         android:layout_alignParentStart="true"
         android:checked="false" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robot was defended against"
+        android:id="@+id/defendedAgainstBox"
+        android:textColor="@color/yellow"
+        android:layout_below="@id/defendsBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/defenseSelectionLayout"
         android:layout_height="match_parent"
-        android:layout_below="@+id/defendsBox">
+        android:layout_below="@+id/defendedAgainstBox">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
