@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         defensesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         defenseBreachedInAutoSpinner.setAdapter(defensesAdapter);
 
-        String[] goalItems = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        String[] goalItems = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"};
         ArrayAdapter<String>goalAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, goalItems);
         scoreInAutoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         highGoalsMissedSpinner.setAdapter(goalAdapter);
@@ -453,11 +453,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private void send(boolean forceSend){
         if(!canSend) return;
         //Make sure all the fields are filled with values
-        if(TextUtils.isEmpty(teamNumber.getText().toString())){
-            displayText("Please enter a team number", Toast.LENGTH_LONG);
-            return;
-        }
         if(!forceSend){
+            if(TextUtils.isEmpty(nameField.getText().toString())){
+                displayText("Please enter your name or initial", Toast.LENGTH_LONG);
+                return;
+            }
+            if(TextUtils.isEmpty(teamNumber.getText().toString())){
+                displayText("Please enter a team number", Toast.LENGTH_LONG);
+                return;
+            }
             if(TextUtils.isEmpty(matchNumber.getText().toString())){
                 displayText("Please enter in the qualification match number", Toast.LENGTH_LONG);
                 return;
@@ -474,8 +478,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         outputs[2] = scoresInAutoBox.isChecked() ? (scoreInAutoSpinner.getSelectedItem().toString() == "Low" ? "1" : "2") : "-1";
         outputs[3] = Integer.toString(highGoalScoreSpinner.getSelectedItemPosition());
         outputs[4] = Integer.toString(lowGoalScoreSpinner.getSelectedItemPosition());
-        //outputs[3] = scoreInHighGoalBox.isChecked() ? (String.valueOf(numberInHighGoalText.getText())) : "0";
-        //outputs[4] = scoreInLowGoalBox.isChecked() ? String.valueOf(numberInLowGoalText.getText()) : "0";
         outputs[5] = canHangBox.isChecked() ? "1" : "-1";
         outputs[6] = defendsBox.isChecked() ? "1" : "-1";
         outputs[7] = portcullisButton.isChecked() ? (portcullisBreached.isChecked() ? "1" : "-1") : "0";
@@ -512,10 +514,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         highGoalScoreSpinner.setSelection(0);
         lowGoalsMissedSpinner.setSelection(0);
         lowGoalScoreSpinner.setSelection(0);
-        //scoreInHighGoalBox.setChecked(false);
-        //numberInHighGoalText.setText("");
-        //scoreInLowGoalBox.setChecked(false);
-        //numberInLowGoalText.setText("");
         canHangBox.setChecked(false);
         defendsBox.setChecked(false);
         wasDefendedAgainstBox.setChecked(false);
